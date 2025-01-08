@@ -58,7 +58,7 @@ export const allLangs = [
 
 export const defaultLang = allLangs[0]; // English
 
-
+export const BASE_API = "http://realtime-live-chat.test/api";
 
 // DEFAULT ROOT PATH
 export const DEFAULT_PATH = PATH_DASHBOARD.general.app; // as '/app'

@@ -51,7 +51,7 @@ const SideBar = () => {
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-    navigate();
+    navigate('/logout');
   };
   const handleClose = () => {
     setAnchorEl(null);

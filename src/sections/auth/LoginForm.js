@@ -6,12 +6,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, IconButton, InputAdornment, Link, Stack } from '@mui/material';
 import { RHFTextField } from '../../components/hook-form';
 import { Eye, EyeSlash } from 'phosphor-react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { apifetch } from '../../utils/fetchApi';
+// import { useSelector } from 'react-redux';
+import { dispatch } from '../../redux/store';
+import { login } from '../../redux/slices/authSlice';
 
 const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
-
+  // const { isAuthenticated, token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   //validation rules 
   const loginSchema = Yup.object().shape({
     email:Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -32,8 +37,25 @@ const LoginForm = () => {
    = methods;
 
    const onSubmit = async (data) =>{
+    
+    // if(isAuthenticated){
+    //   return (<Navigate to="app"/>)
+    // }
+    
+      
         try {
-            //submit data to backend
+          const resp = await apifetch("/auth/login",null,data,"POST")
+          if(resp?.success){
+            
+            dispatch(login(resp?.data?.token))
+            navigate("/app");
+      
+          }else{
+            setError('afterSubmit',{
+              message: resp?.message
+            })
+            // dispatch(logout())
+          }
         } catch (error) {
             console.log(error);
             reset();
