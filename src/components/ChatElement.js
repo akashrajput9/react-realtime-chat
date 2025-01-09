@@ -72,8 +72,9 @@ import StyledBadge from './StyledBadge';
 //   ]
 // }
 //single chat element
-const ChatElement = ({id,is_group,name,created_at,users,is_online,profile_photo}) => {
+const ChatElement = ({id,is_group,name,created_at,users,is_online,last_message}) => {
     const theme = useTheme();
+    const profile_photo = is_group ? "" :users[0].profile_photo;
     return (
       <Box sx={{
         width: "100%",
@@ -93,7 +94,7 @@ const ChatElement = ({id,is_group,name,created_at,users,is_online,profile_photo}
                 {name}
               </Typography>
               <Typography variant='caption'>
-                {/* {msg} */}
+                {last_message.content}
               </Typography>
             </Stack>
             </Stack>

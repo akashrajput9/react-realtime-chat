@@ -24,7 +24,7 @@ const Chats = () => {
         console.log('lgin')
         dispatch(logout())
       }else if(res.success == 1){
-        setChatList(res?.data?.conversations)  
+        setChatList(res?.data?.conversations?.data)  
       }
       
     });
