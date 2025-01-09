@@ -1,86 +1,34 @@
-import { Avatar, Badge, Box, Stack, Typography } from '@mui/material';
+import { Avatar, AvatarGroup, Badge, Box, Stack, Typography } from '@mui/material';
 import {useTheme , styled} from '@mui/material/styles';
 import StyledBadge from './StyledBadge';
+import groupAvatar from '../assets/Images/group-icon.png';
+import { dispatch } from '../redux/store';
+import { setMessages } from '../redux/slices/messageSlice';
+import { useSelector } from 'react-redux';
+import { apifetch } from '../utils/fetchApi';
 
-// {
-//   "id": 2,
-//   "name": "reiciendis officia cum",
-//   "is_group": 1,
-//   "created_at": "2025-01-08T15:15:00.000000Z",
-//   "updated_at": "2025-01-08T15:15:00.000000Z",
-//   "users": [
-//       {
-//           "id": 8,
-//           "name": "Dr. Kristina Huels II",
-//           "email": "hulda92@example.net",
-//           "email_verified_at": "2025-01-08T15:15:00.000000Z",
-//           "created_at": "2025-01-08T15:15:00.000000Z",
-//           "updated_at": "2025-01-08T15:15:00.000000Z",
-//           "pivot": {
-//               "conversation_id": 2,
-//               "user_id": 8
-//           }
-//       },
-//       {
-//           "id": 1,
-//           "name": "Damien Kub",
-//           "email": "akashrajput9@hotmail.com",
-//           "email_verified_at": "2025-01-08T15:15:00.000000Z",
-//           "created_at": "2025-01-08T15:15:00.000000Z",
-//           "updated_at": "2025-01-08T15:15:00.000000Z",
-//           "pivot": {
-//               "conversation_id": 2,
-//               "user_id": 1
-//           }
-//       },
-//       {
-//           "id": 11,
-//           "name": "Garnet Schaden",
-//           "email": "josefina.leannon@example.org",
-//           "email_verified_at": "2025-01-08T15:15:00.000000Z",
-//           "created_at": "2025-01-08T15:15:00.000000Z",
-//           "updated_at": "2025-01-08T15:15:00.000000Z",
-//           "pivot": {
-//               "conversation_id": 2,
-//               "user_id": 11
-//           }
-//       },
-//       {
-//           "id": 4,
-//           "name": "Angelina Hill",
-//           "email": "rohan.briana@example.org",
-//           "email_verified_at": "2025-01-08T15:15:00.000000Z",
-//           "created_at": "2025-01-08T15:15:00.000000Z",
-//           "updated_at": "2025-01-08T15:15:00.000000Z",
-//           "pivot": {
-//               "conversation_id": 2,
-//               "user_id": 4
-//           }
-//       },
-//       {
-//           "id": 6,
-//           "name": "Rosemarie Bashirian",
-//           "email": "gleichner.oren@example.org",
-//           "email_verified_at": "2025-01-08T15:15:00.000000Z",
-//           "created_at": "2025-01-08T15:15:00.000000Z",
-//           "updated_at": "2025-01-08T15:15:00.000000Z",
-//           "pivot": {
-//               "conversation_id": 2,
-//               "user_id": 6
-//           }
-//       }
-//   ]
-// }
-//single chat element
+
 const ChatElement = ({id,is_group,name,created_at,users,is_online,last_message}) => {
     const theme = useTheme();
-    const profile_photo = is_group ? "" :users[0].profile_photo;
+    const profile_photo = is_group ? groupAvatar :users[0].profile_photo;
+    const user_name = is_group? name: users[0].name;
+    const { messages } = useSelector((state) => state.messages);
+    const { token } = useSelector((state) => state.auth);
+    const handleClick = async () =>{
+     const data = await apifetch("/chat/messages",token,{conversation_id:id})
+      dispatch(setMessages(data?.data?.data))
+      
+      console.log(messages,'messages after set')
+        
+    }
+
     return (
       <Box sx={{
         width: "100%",
         borderRadius: 1,
         backgroundColor: theme.palette.mode === 'light'? "#fff" : theme.palette.background.default
       }}
+        onClick={handleClick}
         p={2}>
         <Stack direction="row" alignItems='center' justifyContent='space-between'>
           <Stack direction='row' spacing={2}>
@@ -89,9 +37,10 @@ const ChatElement = ({id,is_group,name,created_at,users,is_online,last_message})
             <Avatar src={profile_photo} />
             </StyledBadge> : <Avatar src={profile_photo} /> }
             
+            <AvatarGroup />
             <Stack spacing={0.3}>
               <Typography variant='subtitle2'>
-                {name}
+                {user_name}
               </Typography>
               <Typography variant='caption'>
                 {last_message.content}

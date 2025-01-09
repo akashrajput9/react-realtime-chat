@@ -4,7 +4,7 @@ import { store } from "../redux/store";
 export async function apifetch(route,token=null, data = {}, method = "GET", headers = {}) {
     // const token =  store.getState().auth.token;
     // const token =  "2|kCimLtkK4tVKULtxVXhUUR4REFLK3oP50L65YtAN1c0c44f2";
-    console.log('token',token);
+    
     try {
         method = method.toUpperCase();
         const options = {
