@@ -47,7 +47,7 @@ const LoginForm = () => {
           const resp = await apifetch("/auth/login",null,data,"POST")
           if(resp?.success){
             
-            dispatch(login(resp?.data?.token))
+            dispatch(login(resp?.data))
             navigate("/app");
       
           }else{

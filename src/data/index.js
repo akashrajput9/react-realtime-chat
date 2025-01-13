@@ -3,7 +3,7 @@ import {
   ChatCircleDots,
   Gear,
   GearSix,
-  Phone,
+  // Phone,
   SignOut,
   User,
   Users,

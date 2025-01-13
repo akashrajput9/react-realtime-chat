@@ -6,14 +6,17 @@ const authSlice = createSlice({
   initialState: {
     token: null,
     isAuthenticated: false,
+    user: {},
   },
   reducers: {
     login(state, action) {
-      state.token = action.payload;
+      state.token = action.payload.token;
+      state.user = action.payload;
       state.isAuthenticated = true;
     },
     logout(state) {
       state.token = null;
+      state.user = {};
       state.isAuthenticated = false;
     },
   },

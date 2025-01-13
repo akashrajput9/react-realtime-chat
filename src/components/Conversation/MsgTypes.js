@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles'
 import { DotsThreeVertical, DownloadSimple, Image } from 'phosphor-react';
 import React from 'react';
 import {Message_options} from '../../data'
+import { useSelector } from 'react-redux';
 
 const DocMsg = ({el,menu}) => {
     const theme = useTheme();
@@ -109,14 +110,16 @@ const MediaMsg = ({el,menu}) => {
 
 const TextMsg = ({el,menu}) => {
     const theme = useTheme();
+    const {user}  = useSelector((state)=>state.auth);
+    const is_incoming = user.id !== el.user_id;
     return (
-        <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
+        <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
             <Box p={1.5} sx={{
-                backgroundColor: el.incoming ? theme.palette.background.default :
+                backgroundColor: is_incoming ? theme.palette.background.default :
                     theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
             }}>
-                <Typography variant='body2' color={el.incoming ? theme.palette.text : '#fff'}>
-                    {el.message}
+                <Typography variant='body2' color={is_incoming ? theme.palette.text : '#fff'}>
+                    {el.content}
                 </Typography>
             </Box>
             {menu && <MessageOptions/>}

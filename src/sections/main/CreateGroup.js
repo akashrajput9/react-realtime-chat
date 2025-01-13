@@ -29,7 +29,7 @@ const CreateGroupForm = ({handleClose}) =>{
     defaultValues
   });
 
-  const { handleSubmit, formState:{errors, isSubmitting, isSubmitSuccessful, isValid}}
+  const { handleSubmit, formState:{}}
    = methods;
 
    const onSubmit = async (data) => {

@@ -8,8 +8,10 @@ const store = configureStore({
     reducer: persistReducer(rootPersistConfig, rootReducer),// we need to pass all the combine reducers to persistReducer
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,
-        immutableCheck: false
-    }) // function that can run in between writing and reading from our store
+        immutableCheck: false,
+        devTools: process.env.NODE_ENV !== 'production'
+    }), // function that can run in between writing and reading from our store
+    // devTools: process.env.NODE_ENV !== 'production',
 });
 
 const persistor = persistStore(store);
