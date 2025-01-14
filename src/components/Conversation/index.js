@@ -5,8 +5,10 @@ import Header from './Header';
 import Footer from './Footer';
 import Message from './Message';
 
+
 const Conversation = () => {
     const theme = useTheme();
+
   return (
     <Stack height={'100%'} maxHeight={'100vh'} width={'auto'}>
 

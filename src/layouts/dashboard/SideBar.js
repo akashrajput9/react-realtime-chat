@@ -7,7 +7,9 @@ import useSettings from '../../hooks/useSettings';
 import { faker } from '@faker-js/faker';
 import AntSwitch from '../../components/AntSwitch';
 import Logo from '../../assets/Images/logo.ico';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { dispatch } from '../../redux/store';
+import { logout } from '../../redux/slices/authSlice';
 
 const getPath = (index) =>{
   switch (index) {
@@ -51,8 +53,13 @@ const SideBar = () => {
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-    navigate('/logout');
   };
+  const handleSubMenu = (el) =>{
+    if(el.title  == "Logout"){
+      dispatch(logout());
+      return <Navigate to={'/auth/login'} />
+    }
+  }
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -134,7 +141,7 @@ const SideBar = () => {
             >
             <Stack spacing={1} px={1}>
               {Profile_Menu.map((el, idx)=>(
-                  <MenuItem key={idx} onClick={ ()=> {handleClick(); } }>
+                  <MenuItem key={idx} onClick={ (e)=> {handleSubMenu(el); } }>
                     <Stack onClick={()=>{
                       navigate(getMenuPath(idx))
                     }} sx={{width:100}} direction='row' alignItems={'center'}

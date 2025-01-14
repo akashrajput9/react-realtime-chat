@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Link, IconButton, Divider } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Search, SearchIconWrapper, StyledInputBase } from '../../components/Search'
 import { MagnifyingGlass, Plus } from 'phosphor-react';
 import { useTheme } from "@mui/material/styles";
@@ -8,15 +8,33 @@ import '../../css/global.css';
 import { ChatList } from '../../data';
 import ChatElement from '../../components/ChatElement';
 import CreateGroup from '../../sections/main/CreateGroup';
+import { apifetch } from '../../utils/fetchApi';
+import { dispatch } from '../../redux/store';
+import { logout } from '../../redux/slices/authSlice';
+import { useSelector } from 'react-redux';
 
 const Group = () => {
     const theme = useTheme();
     const [openDialog, setOpenDialog] = useState(false);
-
+    const [chatList,setChatList] = useState([]);
+    const { token } = useSelector((state) => state.auth);
     const handleCloseDialog = () =>{
         setOpenDialog(false);
       }
 
+      useEffect(()=>{
+
+        apifetch("/chat",token,{filter:'groups'}).then((res)=>{
+            console.log('api response',res);
+          if(res?.status == 401){
+            console.log('lgin')
+            dispatch(logout())
+          }else if(res.success == 1){
+            setChatList(res?.data?.conversations?.data)  
+          }
+          
+        });
+      },[])
     return (
     <>
     <Stack direction={'row'} sx={{width:'100%'}}>
@@ -50,14 +68,16 @@ const Group = () => {
                             {/*  */}
                             <Typography variant='subtitle2' sx={{color:'#676667'}}>Pinned</Typography>
                             {/* Pinned */}
-                            {ChatList.filter((el)=> el.pinned).map((el)=>{
+                            {/* {ChatList.filter((el)=> el.pinned).map((el)=>{
                                 return <ChatElement  {...el}/>
-                            })}
+                            })} */}
 
                               {/*  */}
                               <Typography variant='subtitle2' sx={{color:'#676667'}}>All Groups</Typography>
                             {/* Chat List */}
-                            {ChatList.filter((el)=> !el.pinned).map((el)=>{
+                            {/* filter((el)=> !el.pinned) */}
+                            {chatList.map((el)=>{
+                                console.log('elelelee',el)
                                 return <ChatElement  {...el}/>
                             })}
                         </Stack>

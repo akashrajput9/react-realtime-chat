@@ -1,6 +1,6 @@
-import { Box, IconButton, Stack, Typography, InputBase, Button, Divider, Avatar, Badge } from
+import { Box, IconButton, Stack, Typography, InputBase, Button, Divider, Avatar, Badge, Link } from
   '@mui/material'
-import { ArchiveBox, CircleDashed, MagnifyingGlass } from 'phosphor-react';
+import { ArchiveBox, CircleDashed, MagnifyingGlass, Plus } from 'phosphor-react';
 import {useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
@@ -11,12 +11,20 @@ import { apifetch } from '../../utils/fetchApi';
 import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
+import CreateGroup from '../../sections/main/CreateGroup';
 
 
 const Chats = () => {
   const theme = useTheme();
   const [chatList,setChatList] = useState([]);
   const { token } = useSelector((state) => state.auth);
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleCloseDialog = () =>{
+    console.log("helel")
+    setOpenDialog(false);
+
+  }
+
   useEffect(()=>{
     
     apifetch("/chat",token).then((res)=>{
@@ -31,6 +39,7 @@ const Chats = () => {
   },[])
   
   return (    
+    <>
     <Box sx={{
       position: "relative", width: 320, 
       backgroundColor: theme.palette.mode === 'light'? "#F8FAFF" : theme.palette.background.paper,
@@ -55,6 +64,13 @@ const Chats = () => {
           </Search>
         </Stack>
 
+        <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+            <Typography variant='subtitle2' component={Link}>Create New Group</Typography>
+            <IconButton onClick={() =>{setOpenDialog(true)}}>
+                <Plus style={{color: theme.palette.primary.main}}/>
+            </IconButton>
+        </Stack>
+        <Divider/>
         <Stack spacing={1}>
           <Stack direction='row' alignItems='center' spacing={1.5}>
             <ArchiveBox size={24} />
@@ -92,6 +108,8 @@ const Chats = () => {
       </Stack>
 
     </Box>
+    {openDialog && <CreateGroup open={openDialog} handleClose={handleCloseDialog}/>}    
+    </>
   )
 }
 
