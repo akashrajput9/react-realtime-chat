@@ -9,13 +9,13 @@ import { apifetch } from '../utils/fetchApi';
 
 
 const ChatElement = (props) => {
-    const {id,is_group,name,created_at,users,is_online,last_message} = props;
+    const {id,is_group,name,created_at,is_online,last_message} = props;
     const theme = useTheme();
     const profile_photo = is_group ? groupAvatar :"users[0].profile_photo";
     const user_name = is_group? name: "users[0].name";
-    const { messages } = useSelector((state) => state.messages);
+    // const { messages } = useSelector((state) => state.messages);
     const { token } = useSelector((state) => state.auth);
-    const handleClick = async () =>{
+    const handleClick = async () => {
       const data = await apifetch("/chat/messages",token,{conversation_id:id})
       let dispatch_data = data?.data;
       dispatch_data.conversation_element = props;
