@@ -14,11 +14,14 @@ const Header = () => {
   const theme = useTheme();
   const {messages} = useSelector((state) => state.messages);
   const ce = messages?.conversation_element;
-  function isRealValue(obj)
+  function isNotReal(ce)
   {
-    return obj && obj !== 'null' && obj !== 'undefined';
+    return Object.keys(ce).length === 0 && ce.constructor === Object;
+    // return obj && obj !== 'null' && obj !== 'undefined';
   }
-  if(isRealValue(ce)){
+  
+  if(isNotReal(ce)){
+    console.log(ce,'ceee')
     return <></>
   }
   
@@ -45,7 +48,7 @@ const Header = () => {
             </Box>
             <Stack spacing={0.2}>
                     <Typography variant='subtitle2'>
-                        {ce.is_group? ce.name: "ce?.users[0]?.name"}
+                        {ce.is_group ? ce.name : ce?.users?.[0]?.name || ''}
                     </Typography>
                     <Typography variant='caption'>
                         {ce.is_online ? 'Online': 'Offline'}

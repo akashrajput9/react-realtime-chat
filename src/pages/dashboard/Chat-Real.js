@@ -13,12 +13,27 @@ import { logout } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import CreateGroup from '../../sections/main/CreateGroup';
 
-
+// const socket = io("http://localhost:3001");
 const Chats = () => {
   const theme = useTheme();
   const [chatList,setChatList] = useState([]);
   const { token } = useSelector((state) => state.auth);
   const [openDialog, setOpenDialog] = useState(false);
+  // const [message, setMessage] = useState("");
+  // const [messages, setMessages] = useState([]);
+
+
+
+  // useEffect(() => {
+  //     // Listen for messages from the server
+  //     socket.on("receive_message", (data) => {
+  //         setMessages((prevMessages) => [...prevMessages, data]);
+  //     });
+
+  //     return () => {
+  //         socket.disconnect();
+  //     };
+  // }, []);
 
   
   const handleCloseDialog = () =>{

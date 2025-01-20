@@ -49,13 +49,43 @@
 
 
 import { Box, Stack } from '@mui/material'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TextMsg } from './MsgTypes';  // Assuming you're rendering TextMsg
+import { socket } from '../../socket';
+import { dispatch } from '../../redux/store';
+import { addMessage } from '../../redux/slices/messageSlice';
 
 const Message = ({ menu }) => {
-  const { messages } = useSelector((state) => state.messages);
+// socket.on("connect", () => {
+//     console.log("Connected to server:", socket.id);
+// });
+
+// socket.on("receive_message", (data) => {
+//     console.log("Message from server:", data);
+// });
+const { messages } = useSelector((state) => state.messages);
+const { user } = useSelector((state) => state.auth);
+  useEffect(() => {
+    // Listen for 'receive_message' event
+    socket.on("receive_message", (data) => {
+        console.log("Message received from server:", data.data.conversation_id,messages.conversation_element.id,data.data.user_id,user.id);
+        if(data.data.conversation_id === messages.conversation_element.id  && data.data.user_id != user.id){
+          dispatch(addMessage(data.data))
+        }
+    });
+
+    return () => {
+        // Clean up the event listener on component unmount
+        socket.off("receive_message");
+    };
+}, []);
+
+
   
+
+  
+
   // Ref to the messages container
   const messagesEndRef = useRef(null);
 

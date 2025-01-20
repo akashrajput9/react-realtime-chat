@@ -162,6 +162,8 @@ import { PaperPlaneTilt } from 'phosphor-react';
 import { apifetch } from '../../utils/fetchApi';
 import { addMessage, setMessages } from '../../redux/slices/messageSlice';
 import { dispatch } from '../../redux/store';
+import io from "socket.io-client";
+
 
 const StyledInput = styled(TextField)(({ theme }) => ({
     "& .MuiInputBase-input": {
@@ -255,8 +257,8 @@ const Footer = () => {
     const [openPicker, setOpenPicker] = useState(false);
     const { token } = useSelector((state) => state.auth);
     const { messages } = useSelector((state) => state.messages);
-    
-    const [inputField, setInputField] = useState(''); // New state to manage the input message
+    // const socket = io("http://localhost:3002");
+    const [inputField, setInputField] = useState('');
 
     const handleSendMessage = async () => {
         if (inputField.trim()) {
@@ -265,6 +267,7 @@ const Footer = () => {
                 setInputField('');
                 apiRes.data.type = "text";
                 dispatch(addMessage(apiRes.data));
+                
             }
         }
     };
