@@ -7,7 +7,7 @@ import ThemeSettings from './components/settings';
 
 function App() {
   return (
-    <ThemeProvider>
+    <ThemeProvider >
       <ThemeSettings>
         {" "}
         <Router />{" "}
