@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/react-realtime-chat/static/js/main.a40a4392.js",
+    "main.js": "/react-realtime-chat/static/js/main.32bdbbdf.js",
     "static/css/76.27064571.chunk.css": "/react-realtime-chat/static/css/76.27064571.chunk.css",
     "static/js/76.355530e1.chunk.js": "/react-realtime-chat/static/js/76.355530e1.chunk.js",
     "static/js/117.bb68895a.chunk.js": "/react-realtime-chat/static/js/117.bb68895a.chunk.js",
@@ -30,7 +30,7 @@
     "static/media/logo.ico": "/react-realtime-chat/static/media/logo.24c14bc74ebae3349b65.ico",
     "static/media/group-icon.png": "/react-realtime-chat/static/media/group-icon.e5cb3c5eb890b0f37932.png",
     "index.html": "/react-realtime-chat/index.html",
-    "main.a40a4392.js.map": "/react-realtime-chat/static/js/main.a40a4392.js.map",
+    "main.32bdbbdf.js.map": "/react-realtime-chat/static/js/main.32bdbbdf.js.map",
     "76.27064571.chunk.css.map": "/react-realtime-chat/static/css/76.27064571.chunk.css.map",
     "76.355530e1.chunk.js.map": "/react-realtime-chat/static/js/76.355530e1.chunk.js.map",
     "117.bb68895a.chunk.js.map": "/react-realtime-chat/static/js/117.bb68895a.chunk.js.map",
@@ -59,6 +59,6 @@
     "385.4ae2383d.chunk.js.map": "/react-realtime-chat/static/js/385.4ae2383d.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.a40a4392.js"
+    "static/js/main.32bdbbdf.js"
   ]
 }
