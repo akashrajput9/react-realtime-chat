@@ -11,13 +11,15 @@ import { apifetch } from '../../utils/fetchApi';
 import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
-import CreateGroup from '../../sections/main/CreateGroup';
+import CreateChat from '../../sections/main/CreateChat';
+import { setChat } from '../../redux/slices/chatSlice';
 
 
 const Chats = () => {
   const theme = useTheme();
-  const [chatList,setChatList] = useState([]);
+  // const [chatList,setChatList] = useState([]);
   const { token } = useSelector((state) => state.auth);
+  const { chats } = useSelector((state) => state.chats);
   const [openDialog, setOpenDialog] = useState(false);
 
   
@@ -31,10 +33,10 @@ const Chats = () => {
     
     apifetch("/chat",token).then((res)=>{
       if(res?.status == 401){
-        console.log('lgin')
         dispatch(logout())
       }else if(res.success == 1){
-        setChatList(res?.data?.conversations?.data)  
+        console.log(res?.data?.conversations?.data,'data api chats')
+        dispatch(setChat(res?.data?.conversations?.data))
       }
       
     });
@@ -67,7 +69,7 @@ const Chats = () => {
         </Stack>
 
         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-            <Typography variant='subtitle2' component={Link}>Create New Group</Typography>
+            <Typography variant='subtitle2' component={Link}>New Chat</Typography>
             <IconButton onClick={() =>{setOpenDialog(true)}}>
                 <Plus style={{color: theme.palette.primary.main}}/>
             </IconButton>
@@ -100,7 +102,7 @@ const Chats = () => {
               All Chats
             </Typography>
             {/* filter((el)=> !el.pinned) */}
-            {chatList.map((el,indx)=>{
+            {chats.map((el,indx)=>{
               return <ChatElement key={indx} {...el}/>
             })}
             
@@ -110,7 +112,7 @@ const Chats = () => {
       </Stack>
 
     </Box>
-    {openDialog && <CreateGroup open={openDialog} handleClose={handleCloseDialog}/>}    
+    {openDialog && <CreateChat open={openDialog} handleClose={handleCloseDialog}/>}    
     </>
   )
 }

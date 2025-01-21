@@ -9,10 +9,11 @@ import { apifetch } from '../utils/fetchApi';
 
 
 const ChatElement = (props) => {
-    const {id,is_group,name,users,created_at,is_online,last_message} = props;
+    const {id,is_group,name,users,created_at,is_online,last_message,unread_count} = props;
     const theme = useTheme();
     const profile_photo = is_group ? groupAvatar :users[0].profile_photo;
     const user_name = is_group? name: users[0].name;
+    
     // const { messages } = useSelector((state) => state.messages);
     const { token } = useSelector((state) => state.auth);
     const handleClick = async () => {
@@ -22,6 +23,7 @@ const ChatElement = (props) => {
       dispatch(setMessages(dispatch_data));
     }
     
+    console.log(props,'props')
     return (
       <Box sx={{
         width: "100%",
@@ -43,7 +45,7 @@ const ChatElement = (props) => {
                 {user_name}
               </Typography>
               <Typography variant='caption'>
-                {last_message.content}
+                {last_message?.content}
               </Typography>
             </Stack>
             </Stack>
@@ -51,7 +53,7 @@ const ChatElement = (props) => {
               <Typography sx={{fontWeight:600}} variant='caption'>
                 {created_at}
               </Typography>
-              <Badge color='primary' badgeContent={4}>
+              <Badge color='primary' badgeContent={unread_count}>
   
               </Badge>
             </Stack>

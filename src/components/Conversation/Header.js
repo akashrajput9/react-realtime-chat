@@ -9,16 +9,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import { Navigate } from 'react-router-dom';
 
+export function isNotReal(ce)
+{
+  return Object.keys(ce).length === 0 && ce.constructor === Object;
+  // return obj && obj !== 'null' && obj !== 'undefined';
+}
 const Header = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const {messages} = useSelector((state) => state.messages);
   const ce = messages?.conversation_element;
-  function isNotReal(ce)
-  {
-    return Object.keys(ce).length === 0 && ce.constructor === Object;
-    // return obj && obj !== 'null' && obj !== 'undefined';
-  }
+ 
   
   if(isNotReal(ce)){
     console.log(ce,'ceee')

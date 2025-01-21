@@ -66,7 +66,7 @@ const CreateGroup = ({open, handleClose}) => {
         {/* Content */}
         <DialogContent>
           {/* Form */}
-          <CreateGroupForm handleClose/>
+          <CreateGroupForm handleClose={handleClose}/>
         </DialogContent>
     </Dialog>
   )
