@@ -35,7 +35,6 @@ const Chats = () => {
       if(res?.status == 401){
         dispatch(logout())
       }else if(res.success == 1){
-        console.log(res?.data?.conversations?.data,'data api chats')
         dispatch(setChat(res?.data?.conversations?.data))
       }
       

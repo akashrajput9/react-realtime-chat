@@ -21,9 +21,8 @@ const ChatElement = (props) => {
       let dispatch_data = data?.data;
       dispatch_data.conversation_element = props;
       dispatch(setMessages(dispatch_data));
+      
     }
-    
-    console.log(props,'props')
     return (
       <Box sx={{
         width: "100%",
@@ -54,7 +53,6 @@ const ChatElement = (props) => {
                 {created_at}
               </Typography>
               <Badge color='primary' badgeContent={unread_count}>
-  
               </Badge>
             </Stack>
           

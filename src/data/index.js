@@ -6,6 +6,7 @@ import {
   // Phone,
   SignOut,
   User,
+  UserGear,
   Users,
 } from "phosphor-react";
 
@@ -32,6 +33,10 @@ const Nav_Buttons = [
   {
     index: 1,
     icon: <Users />,
+  },
+  {
+    index: 5,
+    icon: <UserGear />,
   },
   // {
   //   index: 2,

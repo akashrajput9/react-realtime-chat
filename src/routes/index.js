@@ -39,6 +39,7 @@ export default function Router() {
         { path: "settings", element: <Settings /> },
         { path: "group", element: <GroupPage /> },
         { path: "call", element: <CallPage /> },
+        { path: "roles",element: <RolePage />},
         { path: "profile", element: <ProfilePage /> },
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },
@@ -79,6 +80,10 @@ const Settings = Loadable(
 const CallPage = Loadable(
   lazy(() => import("../pages/dashboard/Call")),
 );
+
+const RolePage = Loadable(
+  lazy(() => import("../pages/dashboard/Role"))
+)
 
 const ProfilePage = Loadable(
   lazy(() => import("../pages/dashboard/Profile")),

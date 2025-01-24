@@ -77,7 +77,6 @@ const Group = () => {
                             {/* Chat List */}
                             {/* filter((el)=> !el.pinned) */}
                             {chatList.map((el)=>{
-                                console.log('elelelee',el)
                                 return <ChatElement  {...el}/>
                             })}
                         </Stack>

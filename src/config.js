@@ -3,6 +3,7 @@ import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
 
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
+import { apifetch } from './utils/fetchApi';
 
 export const defaultSettings = {
   themeMode: "light",
@@ -56,11 +57,24 @@ export const allLangs = [
   },
 ];
 
+export const getRoles = () => apifetch(`/roles`);
+export const getPermissions = () => apifetch(`/permissions`);
+export const createRole = (name) => apifetch(`/roles`, { name });
+export const assignPermission = (roleId, permissionName) =>
+  apifetch(`/roles/${roleId}/permissions`, { permission: permissionName });
+
+// New: Delete a role
+export const deleteRole = (roleId) => apifetch(`/roles/${roleId}`, {}, 'DELETE');
+
+// New: Update a role
+export const updateRole = (roleId, name) =>
+  apifetch(`/roles/${roleId}`, { name }, 'PUT');
+
 export const defaultLang = allLangs[0]; // English
 
 // export const BASE_API = "http://realtime-live-chat.test/api";
-// export const BASE_API = "http://127.0.0.1:8000/api";
-export const BASE_API = "https://node.directwebhost.com/api";
+export const BASE_API = "http://127.0.0.1:8000/api";
+// export const BASE_API = "https://node.directwebhost.com/api";
 export const NODE_SERVER = "http://localhost:3002";
 
 // DEFAULT ROOT PATH

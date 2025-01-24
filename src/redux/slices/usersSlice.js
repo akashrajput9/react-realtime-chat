@@ -13,7 +13,7 @@ const usersSlice = createSlice({
       state.users.data = action.payload;
     },
     addUser(state,action){
-      state.users.data.unshift(action.payload);
+      state.users.data.push(action.payload);
     }
   },
 });

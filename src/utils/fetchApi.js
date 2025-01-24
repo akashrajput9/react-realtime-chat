@@ -2,7 +2,7 @@ import { BASE_API } from "../config";
 
 
 export async function apifetch(route, token = null, data = {}, method = "GET", headers = {}) {
-    console.log('api data payload ', data);
+    
     try {
         method = method.toUpperCase();
         let url = BASE_API + route;
