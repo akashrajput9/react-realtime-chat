@@ -12,7 +12,6 @@ import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
 
 const getPath = (index) =>{
-  console.log(index,'inexdd')
   switch (index) {
     case 0:
       return '/app'
@@ -28,6 +27,8 @@ const getPath = (index) =>{
 
     case 5:
       return '/roles'
+    case 5:
+      return '/dashboard'
   
     default:
       break;

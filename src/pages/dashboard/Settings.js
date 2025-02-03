@@ -1,7 +1,7 @@
 import { Avatar, Box, Divider, IconButton, Stack, Typography } from '@mui/material'
 import React, {useState} from 'react';
 import { useTheme } from "@mui/material/styles";
-import { Bell, CaretLeft, Image, Info, Key, Keyboard, Lock, Note, PencilCircle } from 'phosphor-react';
+import { Bell, CaretLeft, Image, Info, Key, Keyboard, Lock, Note, Pencil, PencilCircle } from 'phosphor-react';
 import { faker } from '@faker-js/faker';
 import Shortcuts from '../../sections/settings/Shortcuts';
 import Conversation from '../../components/Conversation';
@@ -23,55 +23,55 @@ const Settings = () => {
     }
 
     const list = [
-      // {
-      //   key:0,
-      //   icon: <Bell size={20}/>,
-      //   title: 'Notifications',
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:1,
-      //   icon: <Lock size={20}/>,
-      //   title: 'Privacy',
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:2,
-      //   icon: <Key size={20}/>,
-      //   title: 'Security',
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:3,
-      //   icon: <PencilCircle size={20}/>,
-      //   title: 'Theme',
-      //   //onclick: handleOpenTheme
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:4,
-      //   icon: <Image size={20}/>,
-      //   title: 'Chat Wallpaper',
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:5,
-      //   icon: <Note size={20}/>,
-      //   title: 'Request Account Info',
-      //   onclick: () =>{}
-      // },
-      // {
-      //   key:6,
-      //   icon: <Keyboard size={20}/>,
-      //   title: 'Keyboard Shortcuts',
-      //   onclick: handleOpenShortcuts
-      // },
-      // {
-      //   key:7,
-      //   icon: <Info size={20}/>,
-      //   title: 'Help',
-      //   onclick: () =>{}
-      // },
+    //   {
+    //     key:0,
+    //     icon: <Bell size={20}/>,
+    //     title: 'Notifications',
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:1,
+    //     icon: <Lock size={20}/>,
+    //     title: 'Privacy',
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:2,
+    //     icon: <Key size={20}/>,
+    //     title: 'Security',
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:3,
+    //     icon: <PencilCircle size={20}/>,
+    //     title: 'Theme',
+    //     //onclick: handleOpenTheme
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:4,
+    //     icon: <Image size={20}/>,
+    //     title: 'Chat Wallpaper',
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:5,
+    //     icon: <Note size={20}/>,
+    //     title: 'Request Account Info',
+    //     onclick: () =>{}
+    //   },
+    //   {
+    //     key:6,
+    //     icon: <Keyboard size={20}/>,
+    //     title: 'Keyboard Shortcuts',
+    //     onclick: handleOpenShortcuts
+    //   },
+      {
+        key:7,
+        icon: <Pencil size={20}/>,
+        title: 'Update Profile Picture',
+        onclick: () =>{}
+      },
     ]
 
   return (

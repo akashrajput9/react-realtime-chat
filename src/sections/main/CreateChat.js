@@ -75,9 +75,7 @@ const CreateChatForm = ({ handleClose }) => {
                         }
                         
                     }
-                    console.log('processing ',res.data);
                     const data = apifetch("/chat/messages",token,{conversation_id:res?.data?.id}).then((data) => {
-                        console.log('processing dispatch ',data);
                         let dispatch_data = data?.data;
                         dispatch_data.conversation_element = res.data;
                         dispatch(setMessages(dispatch_data));
@@ -92,7 +90,6 @@ const CreateChatForm = ({ handleClose }) => {
         }
     };
 
-    console.log(users?.data,'users data')
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3}>

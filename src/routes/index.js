@@ -8,6 +8,7 @@ import MainLayout from "../layouts/main";
 // config
 import { DEFAULT_PATH } from "../config";
 import LoadingScreen from "../components/LoadingScreen";
+import Dashbaord from "../pages/dashboard/Dashboard";
 //import Settings from "../pages/dashboard/Settings";
 
 const Loadable = (Component) => (props) => {
@@ -40,6 +41,8 @@ export default function Router() {
         { path: "group", element: <GroupPage /> },
         { path: "call", element: <CallPage /> },
         { path: "roles",element: <RolePage />},
+        { path: "dashboard",element: <Dashbaord />},
+        
         { path: "profile", element: <ProfilePage /> },
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },

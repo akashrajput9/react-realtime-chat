@@ -18,9 +18,8 @@ import {
   IconButton,
 } from '@mui/material';
 import Background from '../../assets/Images/roles-bg.jpg';
-import { ArrowArcLeft } from 'phosphor-react';
 
-const RolesPermissions = () => {
+const Dashboard = () => {
   // State for user management
   const [users, setUsers] = useState([]);
   const [userName, setUserName] = useState('');
@@ -39,10 +38,7 @@ const RolesPermissions = () => {
   useEffect(() => {
     // Simulated API calls (replace with real APIs)
     setUsers([
-      { id: 1, name: 'Arvin', email: 'john@example.com', phone: '1234567890', role: 'Admin' },
-      { id: 1, name: 'Akash', email: 'john@example.com', phone: '1234567890', role: 'Production' },
-      { id: 1, name: 'Anas', email: 'john@example.com', phone: '1234567890', role: 'Admin' },
-      { id: 1, name: 'Neha', email: 'john@example.com', phone: '1234567890', role: 'User' },
+      { id: 1, name: 'John Doe', email: 'john@example.com', phone: '1234567890', role: 'Admin' },
     ]);
     setRoles([
       { id: 1, name: 'Admin' },
@@ -122,10 +118,9 @@ const RolesPermissions = () => {
         
         // minHeight: '50vh',
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 2,
-        padding:2,
-        
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 3,
+        padding:2
       }}
     >
       {/* User Creation Box */}
@@ -137,8 +132,6 @@ const RolesPermissions = () => {
           boxShadow: 3,
           display: 'flex',
           flexDirection: 'column',
-          width:'60%',
-          marginLeft: 'auto'
         }}
       >
         <Box sx={{ marginBottom: 3 }}>
@@ -207,8 +200,6 @@ const RolesPermissions = () => {
           padding: 3,
           borderRadius: 2,
           boxShadow: 3,
-          width:'60%',
-          marginRight: 'auto'
         }}
       >
         
@@ -230,13 +221,12 @@ const RolesPermissions = () => {
                     <TableCell>{role.id}</TableCell>
                     <TableCell>{role.name}</TableCell>
                     <TableCell>
-                    <IconButton onClick={() => handleDeleteRole(role.id)} color="error">
-                        🗑️
-                      </IconButton>
                       <IconButton onClick={() => handleEditRole(role)} color="primary">
                         ✏️
                       </IconButton>
-                     
+                      <IconButton onClick={() => handleDeleteRole(role.id)} color="error">
+                        🗑️
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -245,7 +235,47 @@ const RolesPermissions = () => {
           </TableContainer>
       </Box>
 
-
+      <Box
+        sx={{
+          background: 'white',
+          padding: 3,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        
+        
+        <Typography variant="h5" gutterBottom>
+            Permissions List
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Permission ID</TableCell>
+                  <TableCell>Permission Name</TableCell>
+                  <TableCell>Permission Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {permissions.map((permission) => (
+                  <TableRow key={permission.id}>
+                    <TableCell>{permission.id}</TableCell>
+                    <TableCell>{permission.name}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditRole(permission)} color="primary">
+                        ✏️
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteRole(permission.id)} color="error">
+                        🗑️
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+      </Box>
 
       
 
@@ -257,9 +287,10 @@ const RolesPermissions = () => {
         
         // minHeight: '50vh',
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 2,
-        padding:0,
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 3,
+        marginTop:2,
+        padding:2
       }}
     >
       {/* User Creation Box */}
@@ -271,8 +302,6 @@ const RolesPermissions = () => {
           boxShadow: 3,
           display: 'flex',
           flexDirection: 'column',
-          width:'60%',
-          marginLeft: 'auto'
         }}
       >
         <Typography variant="h5" gutterBottom>
@@ -327,8 +356,6 @@ const RolesPermissions = () => {
           padding: 3,
           borderRadius: 2,
           boxShadow: 3,
-          width:'60%',
-          marginRight: 'auto'
         }}
       >
         <Typography variant="h5" gutterBottom>
@@ -351,20 +378,12 @@ const RolesPermissions = () => {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   <TableCell>
-                    
-                    
                     <IconButton
                       onClick={() => handleDeleteUser(user.id)}
                       color="error"
                     >
                       🗑️
                     </IconButton>
-                    {user.role == "Admin" ? <></>: <IconButton
-                      onClick={() => handleDeleteUser(user.id)}
-                      color="error"
-                    >
-                      <ArrowArcLeft />
-                    </IconButton>}
                   </TableCell>
                 </TableRow>
               ))}
@@ -383,4 +402,4 @@ const RolesPermissions = () => {
   );
 };
 
-export default RolesPermissions;
+export default Dashboard;

@@ -74,7 +74,7 @@ const Chats = () => {
             </IconButton>
         </Stack>
         <Divider/>
-        <Stack spacing={1}>
+        {/* <Stack spacing={1}>
           <Stack direction='row' alignItems='center' spacing={1.5}>
             <ArchiveBox size={24} />
             <Button>
@@ -82,7 +82,7 @@ const Chats = () => {
             </Button>
           </Stack>
           <Divider />
-        </Stack>
+        </Stack> */}
 
         <Stack className='scrollbar' spacing={2} direction='column' sx={{flexGrow:1, overflow:'scroll', height:'100%'}}>
 

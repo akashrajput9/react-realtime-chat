@@ -2,7 +2,7 @@
   "name": "chat",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://akashrajput9.github.io/",
+  "homepage": "https://akashrajput9.github.io/react-chat-app/",
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
