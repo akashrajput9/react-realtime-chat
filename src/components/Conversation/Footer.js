@@ -163,6 +163,7 @@ import { apifetch } from '../../utils/fetchApi';
 import { addMessage, setMessages } from '../../redux/slices/messageSlice';
 import { dispatch } from '../../redux/store';
 import io from "socket.io-client";
+import { moveChatToTop } from '../../redux/slices/chatSlice';
 
 
 const StyledInput = styled(TextField)(({ theme }) => ({
@@ -266,8 +267,8 @@ const Footer = () => {
             if (apiRes.success) {
                 setInputField('');
                 apiRes.data.type = "text";
+                // dispatch(moveChatToTop(apiRes.data))
                 dispatch(addMessage(apiRes.data));
-                
             }
         }
     };

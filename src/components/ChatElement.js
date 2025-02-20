@@ -6,6 +6,7 @@ import { dispatch } from '../redux/store';
 import { setMessages } from '../redux/slices/messageSlice';
 import { useSelector } from 'react-redux';
 import { apifetch } from '../utils/fetchApi';
+import { setRead } from '../redux/slices/chatSlice';
 
 
 const ChatElement = (props) => {
@@ -19,8 +20,10 @@ const ChatElement = (props) => {
     const handleClick = async () => {
       const data = await apifetch("/chat/messages",token,{conversation_id:id})
       let dispatch_data = data?.data;
+      console.log('seting conversation element',props)
       dispatch_data.conversation_element = props;
       dispatch(setMessages(dispatch_data));
+      dispatch(setRead(props.id))
       
     }
     return (
