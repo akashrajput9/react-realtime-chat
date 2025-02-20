@@ -96,11 +96,9 @@ const { user } = useSelector((state) => state.auth);
 useEffect(() => {
   if (!user?.id) return; // Ensure user is logged in before proceeding
 
-  console.log(`Registering user ${user.id} to room user_${user.id}`);
   socket.emit("register", user.id); // Send user ID to the server
 
   socket.on("receive_message", (data) => {
-      console.log("Message received from server:", data);
       data = data.data;
       dispatch(moveChatToTop(data));
 
@@ -111,7 +109,6 @@ useEffect(() => {
   });
 
   return () => {
-      console.log("Cleaning up socket listeners...");
       socket.off("receive_message");
   };
 }, [user?.id, messages.conversation_element?.id, dispatch]);
