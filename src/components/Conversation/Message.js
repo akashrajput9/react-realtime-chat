@@ -55,36 +55,63 @@ import { TextMsg } from './MsgTypes';  // Assuming you're rendering TextMsg
 import { socket } from '../../socket';
 import { dispatch } from '../../redux/store';
 import { addMessage } from '../../redux/slices/messageSlice';
+import { moveChatToTop, setRead } from '../../redux/slices/chatSlice';
 
 const Message = ({ menu }) => {
-// socket.on("connect", () => {
-//     console.log("Connected to server:", socket.id);
-// });
-
-// socket.on("receive_message", (data) => {
-//     console.log("Message from server:", data);
-// });
 const { messages } = useSelector((state) => state.messages);
 const { user } = useSelector((state) => state.auth);
-  useEffect(() => {
-    // Listen for 'receive_message' event
-    socket.on("receive_message", (data) => {
-        console.log("Message received from server:", data.data.conversation_id,messages.conversation_element.id,data.data.user_id,user.id);
-        if(data.data.conversation_id === messages.conversation_element.id  && data.data.user_id != user.id){
-          dispatch(addMessage(data.data))
-        }
-    });
+// useEffect(() => {
 
-    return () => {
-        // Clean up the event listener on component unmount
-        socket.off("receive_message");
-    };
-}, []);
+//   socket.on("connection", (socket) => {
+//       console.log(`User connected: ${socket.id}`);
 
+//       // Handle user authentication (you should pass userId when connecting)
+//       socket.on("register", (userId) => {
+//           socket.join(`user_${userId}`);
+//           socket.userId = userId; // Store userId in socket object
+//           console.log(userId,'user id')
+//       });
+//       socket.on("receive_message", (data) => {
+//           console.log("Message received from server:", data.data.conversation_id,messages.conversation_element.id,data.data.user_id,user.id);
+//           dispatch(moveChatToTop(data.data))
+//           if(data.data.conversation_id === messages.conversation_element.id  && data.data.user_id != user.id){
+//             dispatch(addMessage(data.data))
+//             dispatch(setRead(data.data?.conversation_id))
+//           }
+//       });
 
-  
+//       socket.on("disconnect", () => {
+//           console.log(`User disconnected: ${socket.id}`);
+//       });
+//     });
 
-  
+//     // Listen for 'receive_message' event
+    
+//     return () => {
+//         // Clean up the event listener on component unmount
+//         socket.off("receive_message");
+//     };
+// }, [messages.conversation_element?.id, user.id, dispatch]);
+
+useEffect(() => {
+  if (!user?.id) return; // Ensure user is logged in before proceeding
+
+  socket.emit("register", user.id); // Send user ID to the server
+
+  socket.on("receive_message", (data) => {
+      data = data.data;
+      dispatch(moveChatToTop(data));
+
+      if (data.conversation_id === messages.conversation_element?.id && data.user_id !== user.id) {
+          dispatch(addMessage(data));
+          dispatch(setRead(data.conversation_id));
+      }
+  });
+
+  return () => {
+      socket.off("receive_message");
+  };
+}, [user?.id, messages.conversation_element?.id, dispatch]);
 
   // Ref to the messages container
   const messagesEndRef = useRef(null);
