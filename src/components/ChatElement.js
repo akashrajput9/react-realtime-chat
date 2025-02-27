@@ -12,6 +12,7 @@ import { setRead } from '../redux/slices/chatSlice';
 const ChatElement = (props) => {
     const {id,is_group,name,users,created_at,is_online,last_message,unread_count} = props;
     const theme = useTheme();
+    console.log(props,'usersss')
     const profile_photo = is_group ? groupAvatar :users[0].profile_photo;
     const user_name = is_group? name: users[0].name;
     

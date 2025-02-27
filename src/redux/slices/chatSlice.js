@@ -1,5 +1,19 @@
-// src/store/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+
+const moveChatToTopHelper = (state, chatData) => {
+  const chatIndex = state.chats.findIndex(chat => chat.id === chatData.id);
+  
+  if (chatIndex > -1) {
+    // If chat exists, update and move to top
+    const [chat] = state.chats.splice(chatIndex, 1);
+    chat.last_message = chatData.last_message;
+    chat.unread_count += 1;
+    state.chats.unshift(chat);
+  } else {
+    // If chat doesn't exist, add it
+    state.chats.unshift(chatData);
+  }
+};
 
 const chatSlice = createSlice({
   name: 'chats',
@@ -10,18 +24,15 @@ const chatSlice = createSlice({
     setChat(state, action) {
       state.chats = action.payload;
     },
-    addChat(state,action){
-      state.chats.unshift(action.payload);
+    addChat(state, action) {
+      moveChatToTopHelper(state, action.payload);
     },
     moveChatToTop(state, action) {
-      const conversation_id = action.payload?.conversation_id;
-      const chatIndex = state.chats.findIndex(chat => chat.id === conversation_id);
-      if (chatIndex > -1) {
-        const [chat] = state.chats.splice(chatIndex, 1);
-        chat.last_message = action.payload;
-        chat.unread_count += 1;
-        state.chats.unshift(chat);
-      }
+      const chatData = {
+        id: action.payload.conversation_id,
+        last_message: action.payload,
+      };
+      moveChatToTopHelper(state, chatData);
     },
     setRead(state, action) {
       const chat = state.chats.find(chat => chat.id === action.payload);
@@ -29,8 +40,6 @@ const chatSlice = createSlice({
         chat.unread_count = 0;
       }
     }
-    
-
   },
 });
 

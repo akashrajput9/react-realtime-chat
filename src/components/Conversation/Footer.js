@@ -162,8 +162,7 @@ import { PaperPlaneTilt } from 'phosphor-react';
 import { apifetch } from '../../utils/fetchApi';
 import { addMessage, setMessages } from '../../redux/slices/messageSlice';
 import { dispatch } from '../../redux/store';
-import io from "socket.io-client";
-import { moveChatToTop } from '../../redux/slices/chatSlice';
+import { addChat, moveChatToTop } from '../../redux/slices/chatSlice';
 
 
 const StyledInput = styled(TextField)(({ theme }) => ({
@@ -269,6 +268,12 @@ const Footer = () => {
                 apiRes.data.type = "text";
                 // dispatch(moveChatToTop(apiRes.data))
                 dispatch(addMessage(apiRes.data));
+                console.log(apiRes,'response api')
+                let conversation = apiRes?.data?.conversation;
+                // conversation.last_message = { ...apiRes, conversation: undefined };
+                conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };
+
+                dispatch(addChat(conversation))
             }
         }
     };
