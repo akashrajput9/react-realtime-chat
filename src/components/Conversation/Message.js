@@ -51,7 +51,7 @@
 import { Box, Stack } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TextMsg } from './MsgTypes';  // Assuming you're rendering TextMsg
+import { DocMsg, LinkMsg, MediaMsg, ReplyMsg, TextMsg } from './MsgTypes';  // Assuming you're rendering TextMsg
 import { socket } from '../../socket';
 import { dispatch } from '../../redux/store';
 import { addMessage } from '../../redux/slices/messageSlice';
@@ -125,14 +125,30 @@ useEffect(() => {
 
   return (
     <Box p={3}>
-      <Stack spacing={3}>
+        <Stack spacing={3}>
         {[...messages?.data].reverse().map((el, index) => {
+          const { attachments } = el;
+          let hasAttachments = attachments && attachments.length > 0;
+
+          if (hasAttachments) {
+            const file = attachments[0]; 
+
+            if (file.file_type.startsWith("image/")) {
+              return <MediaMsg key={index} el={{ ...el, img: file.file_path }} menu={menu} />;
+            } 
+            if (file.file_type === "application/pdf" || file.file_type.startsWith("application/")) {
+              return <DocMsg key={index} el={{ ...el, file }} menu={menu} />;
+            }
+          }
+
+          // Handle message types without attachments
           switch (el.type) {
-            case 'text':
-              return <TextMsg key={index} el={el} menu={menu} />;
-            // Add more cases for other message types (e.g., Media, Link, etc.)
+            case 'link':
+              return <LinkMsg key={index} el={el} menu={menu} />;
+            case 'reply':
+              return <ReplyMsg key={index} el={el} menu={menu} />;
             default:
-              return <></>;
+              return <TextMsg key={index} el={el} menu={menu} />;
           }
         })}
       </Stack>

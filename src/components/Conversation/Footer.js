@@ -153,10 +153,10 @@
 // export default Footer
 
 
-import { Box, Fab, IconButton, InputAdornment, Stack, TextField, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Fab, IconButton, InputAdornment, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import React, { useRef, useState } from 'react';
 import { styled, useTheme } from "@mui/material/styles";
-import { LinkSimple, Smiley, Camera, File, Image, Sticker, User } from 'phosphor-react';
+import { LinkSimple, Smiley, Camera, File, Image, Sticker, User, X } from 'phosphor-react';
 import { useSelector } from 'react-redux';
 import { PaperPlaneTilt } from 'phosphor-react';
 import { apifetch } from '../../utils/fetchApi';
@@ -205,49 +205,129 @@ const Actions = [
     }
 ];
 
-const ChatInput = ({ setOpenPicker, inputField, setInputField }) => {
-    const [openAction, setOpenAction] = useState(false);
+const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, setSelectedFile }) => {
+    const fileInputRef = useRef(null); // Reference for file input
+    const {token} = useSelector((state) => state.auth);
 
     const handleInputChange = (e) => {
-        setInputField(e.target.value); // Update state on input change
+        setInputField(e.target.value);
+    };
+
+    const handleAttachment = () => {
+        fileInputRef.current.click(); // Open file picker
+    };
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+    
+        // Show loading state
+        setSelectedFile({ file, preview: "/loading.gif", isUploading: true, attachment_id: null });
+    
+        // Prepare FormData for file upload
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("attachment_for","message")
+
+        
+    
+        try {
+            const response = await apifetch("/attachment/attach", token, formData, "POST");
+            console.log(response,'response api')
+            if (response.success) {
+                
+                // Update state with uploaded file URL
+                setSelectedFile({
+                    file,
+                    preview: file.type.startsWith('image/') ? response.data.file_url : "/file-icon.png",
+                    url: response.data.file_url,
+                    isUploading: false,
+                    attachment_id: response?.data?.id
+                });
+    
+            } else {
+                console.error("Upload failed:", response);
+                setSelectedFile(null); // Remove file on failure
+            }
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            setSelectedFile(null);
+        }
+    };
+    
+
+    const handleRemoveFile = () => {
+        setSelectedFile(null);
+        setInputField(""); // Reset input field
     };
 
     return (
-        <StyledInput
-            value={inputField} // Bind the value to inputField
-            onChange={handleInputChange}
-            fullWidth
-            placeholder='Write a message...'
-            variant='filled'
-            InputProps={{
-                disableUnderline: true,
-                startAdornment: (
-                    <Stack sx={{ width: 'max-content' }}>
-                        <Stack sx={{ position: 'relative', display: openAction ? 'inline-block' : 'none' }}>
-                            {Actions.map((el, index) => (
-                                <Tooltip placement='right' title={el.title} key={index}>
-                                    <Fab sx={{ position: 'absolute', top: -el.y, backgroundColor: el.color }}>
-                                        {el.icon}
-                                    </Fab>
-                                </Tooltip>
-                            ))}
-                        </Stack>
-                        <InputAdornment position="start">
-                            <IconButton onClick={() => setOpenAction((prev) => !prev)}>
-                                <LinkSimple />
-                            </IconButton>
-                        </InputAdornment>
-                    </Stack>
-                ),
-                endAdornment: (
-                    <InputAdornment position="start">
-                        <IconButton onClick={() => setOpenPicker((prev) => !prev)}>
-                            <Smiley />
+        <>
+            <Stack spacing={1}>
+                {/* File Preview */}
+                {selectedFile && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            p: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: 2,
+                            position: 'relative',
+                            maxWidth: '100%',
+                        }}
+                    >
+                        {selectedFile.preview ? (
+                            <img src={selectedFile.preview} alt="preview" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 10 }} />
+                        ) : (
+                            <File size={40} color="#555" style={{ marginRight: 10 }} />
+                        )}
+                        <Typography variant="body2" noWrap>{selectedFile.file.name}</Typography>
+                        <IconButton onClick={handleRemoveFile} sx={{ position: 'absolute', top: -8, right: -8 }}>
+                            <X size={18} />
+                            
                         </IconButton>
-                    </InputAdornment>
-                ),
-            }}
-        />
+                    </Box>
+                )}
+
+                {/* Chat Input */}
+                <StyledInput
+                    value={inputField}
+                    onChange={handleInputChange}
+                    fullWidth
+                    placeholder="Write a message..."
+                    variant="filled"
+                    InputProps={{
+                        disableUnderline: true,
+                        startAdornment: (
+                            <Stack sx={{ width: 'max-content' }}>
+                                <InputAdornment position="start">
+                                    <IconButton onClick={handleAttachment}>
+                                        <LinkSimple />
+                                    </IconButton>
+                                </InputAdornment>
+                            </Stack>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="start">
+                                <IconButton onClick={() => setOpenPicker((prev) => !prev)}>
+                                    <Smiley />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+
+                {/* Hidden File Input */}
+                <input
+                    type="file"
+                    accept="image/*,video/*,.pdf,.docx,.txt"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                />
+            </Stack>
+        </>
     );
 };
 
@@ -257,12 +337,36 @@ const Footer = () => {
     const [openPicker, setOpenPicker] = useState(false);
     const { token } = useSelector((state) => state.auth);
     const { messages } = useSelector((state) => state.messages);
-    // const socket = io("http://localhost:3002");
     const [inputField, setInputField] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    // const handleSendMessage = async () => {
+    //     if (inputField.trim()) {
+    //         const formData = new FormData();
+    //         formData.append('conversation_id', messages.conversation_element.id);
+    //         formData.append('message', inputField);
+    //         if (selectedFile) {
+    //             // formData.append('file', selectedFile.file);
+    //         }
+
+    //         const apiRes = await apifetch("/chat/send", token, formData, "POST", true);
+    //         if (apiRes.success) {
+    //             setInputField('');
+    //             setSelectedFile(null);
+    //             apiRes.data.type = selectedFile ? "file" : "text";
+    //             dispatch(addMessage(apiRes.data));
+
+    //             let conversation = apiRes?.data?.conversation;
+    //             conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };
+    //             dispatch(addChat(conversation));
+    //         }
+    //     }
+    // };
 
     const handleSendMessage = async () => {
-        if (inputField.trim()) {
-            const apiRes = await apifetch("/chat/send", token, { conversation_id: messages.conversation_element.id, message: inputField }, "POST");
+        if (inputField.trim() || selectedFile) {
+            
+            const apiRes = await apifetch("/chat/send", token, { conversation_id: messages.conversation_element.id, message: String(inputField),selected_file:selectedFile?.attachment_id }, "POST");
             if (apiRes.success) {
                 setInputField('');
                 apiRes.data.type = "text";
@@ -274,16 +378,20 @@ const Footer = () => {
                 conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };
 
                 dispatch(addChat(conversation))
+                setSelectedFile(null)
+                
             }
         }
     };
+
+
 
     return (
         <Box p={2} sx={{ width: '100%', backgroundColor: theme.palette.mode === 'light' ? '#F8FAFF' : theme.palette.background.paper, boxShadow: '0px 0px 2px rgba(0,0,0,0.25)' }}>
             <Stack direction='row' alignItems={'center'} spacing={3}>
                 <Stack sx={{ width: '100%' }}>
                     {/* Chat Input */}
-                    <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} />
+                    <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                 </Stack>
 
                 <Box onClick={handleSendMessage} sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>

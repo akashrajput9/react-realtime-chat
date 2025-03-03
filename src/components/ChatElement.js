@@ -12,7 +12,6 @@ import { setRead } from '../redux/slices/chatSlice';
 const ChatElement = (props) => {
     const {id,is_group,name,users,created_at,is_online,last_message,unread_count} = props;
     const theme = useTheme();
-    console.log(props,'usersss')
     const profile_photo = is_group ? groupAvatar :users[0].profile_photo;
     const user_name = is_group? name: users[0].name;
     
@@ -21,7 +20,6 @@ const ChatElement = (props) => {
     const handleClick = async () => {
       const data = await apifetch("/chat/messages",token,{conversation_id:id})
       let dispatch_data = data?.data;
-      console.log('seting conversation element',props)
       dispatch_data.conversation_element = props;
       dispatch(setMessages(dispatch_data));
       dispatch(setRead(props.id))

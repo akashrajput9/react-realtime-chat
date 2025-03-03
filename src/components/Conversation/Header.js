@@ -34,7 +34,7 @@ const Header = () => {
     <Stack alignItems={'center'} direction='row' justifyContent={'space-between'}
     sx={{width:'100%', height:'100%'}}>
         <Stack onClick={()=>{
-            dispatch(ToggleSidebar());
+            // dispatch(ToggleSidebar());
         }} direction={'row'} spacing={2}>
             <Box>
                 {ce.is_online ? <StyledBadge  overlap="circular"
@@ -52,7 +52,8 @@ const Header = () => {
                         {ce.is_group ? ce.name : ce?.users?.[0]?.name || ''}
                     </Typography>
                     <Typography variant='caption'>
-                        {ce.is_online ? 'Online': 'Offline'}
+                        {/* {ce.is_online ? 'Online': 'Offline'} */}
+                        Let's talk
                     </Typography>
                 </Stack>
         </Stack>
@@ -63,13 +64,13 @@ const Header = () => {
             <IconButton>
                 <Phone/>
             </IconButton> */}
-            <IconButton>
+            {/* <IconButton>
                 <MagnifyingGlass/>
-            </IconButton>
-            <Divider orientation='vertical' flexItem/>
-            <IconButton>
+            </IconButton> */}
+            {/* <Divider orientation='vertical' flexItem/> */}
+            {/* <IconButton>
                 <CaretDown/>
-            </IconButton>
+            </IconButton> */}
         </Stack>
     </Stack>
 </Box>

@@ -4,9 +4,19 @@ import { DotsThreeVertical, DownloadSimple, Image } from 'phosphor-react';
 import React from 'react';
 import {Message_options} from '../../data'
 import { useSelector } from 'react-redux';
+import { dispatch } from '../../redux/store';
+import { deleteMessage } from '../../redux/slices/messageSlice';
+import { apifetch } from '../../utils/fetchApi';
 
 const DocMsg = ({el,menu}) => {
     const theme = useTheme();
+    const {token} = useSelector(state => state.auth);
+    const {user}  = useSelector((state)=>state.auth);
+    const is_incoming = user.id !== el.user_id;
+    const handleDownloadFile = (el) => {
+        // apifetch("/chat/delete",token,{message_id:el.id});
+
+    }
   return (
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
@@ -18,9 +28,9 @@ const DocMsg = ({el,menu}) => {
             sx={{backgroundColor:theme.palette.background.paper, borderRadius:1}}>
                 <Image size={48}/>
                 <Typography variant='caption'>
-                    Abstract.png
+                    {el.content}
                 </Typography>
-                <IconButton>
+                <IconButton onClick={event => handleDownloadFile(el)}>
                     <DownloadSimple/>
                 </IconButton>
             </Stack>
@@ -29,7 +39,7 @@ const DocMsg = ({el,menu}) => {
             </Typography>
         </Stack>
         </Box>
-        {menu && <MessageOptions/>}
+        {menu && !is_incoming && <MessageOptions el={el} />}
         
     </Stack>
   )
@@ -37,6 +47,8 @@ const DocMsg = ({el,menu}) => {
 
 const LinkMsg = ({el,menu}) => {
     const theme = useTheme();
+    const {user}  = useSelector((state)=>state.auth);
+    const is_incoming = user.id !== el.user_id;
   return (
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
@@ -58,13 +70,15 @@ const LinkMsg = ({el,menu}) => {
             </Stack>
         </Stack>
         </Box>
-        {menu && <MessageOptions/>}
+        {menu && !is_incoming && <MessageOptions el={el} />}
     </Stack>
   )
 }
 
 const ReplyMsg = ({el, menu}) => {
     const theme = useTheme();
+    const {user}  = useSelector((state)=>state.auth);
+    const is_incoming = user.id !== el.user_id;
   return (
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
@@ -83,13 +97,15 @@ const ReplyMsg = ({el, menu}) => {
             </Typography>
         </Stack>
         </Box>
-        {menu && <MessageOptions/>}
+        {menu && !is_incoming && <MessageOptions el={el} />}
     </Stack>
   )
 }
 
 const MediaMsg = ({el,menu}) => {
     const theme = useTheme();
+    const {user}  = useSelector((state)=>state.auth);
+    const is_incoming = user.id !== el.user_id;
   return (
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
@@ -103,7 +119,7 @@ const MediaMsg = ({el,menu}) => {
                     </Typography>
                 </Stack>
             </Box>
-            {menu && <MessageOptions/>}
+            {menu && !is_incoming && <MessageOptions el={el} />}
     </Stack>
   )
 }
@@ -122,7 +138,7 @@ const TextMsg = ({el,menu}) => {
                     {el.content}
                 </Typography>
             </Box>
-            {menu && <MessageOptions/>}
+            {menu && !is_incoming && <MessageOptions el={el} />}
         </Stack>
     )
 }
@@ -138,13 +154,34 @@ const TimeLine = ({ el }) => {
     </Stack>
 }
 
-const MessageOptions = () => {
+const MessageOptions = ({el}) => {
     
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {token} = useSelector(state => state.auth);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = (event, type = null) => {
+        setAnchorEl(event.currentTarget);
+        if(type == null){
+            return;
+        }
+        if(type == 'delete'){
+            handleDelete();
+        }
+
+        handleClose();
+    };
+
+  const handleDelete = () => {
+    if(el?.id != null){
+        apifetch("/chat/delete",token,{message_id:el.id},"POST").then(res => {
+            console.log(res,'delete api res');
+            dispatch(deleteMessage(el.id))
+        })
+        
+        
+    }
+  }  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -155,7 +192,7 @@ const MessageOptions = () => {
     aria-controls={open ? 'basic-menu' : undefined}
     aria-haspopup="true"
     aria-expanded={open ? 'true' : undefined}
-    onClick={handleClick}
+    onClick={(event) => handleClick(event)}
     size={20}
     />
 
@@ -169,9 +206,12 @@ const MessageOptions = () => {
         }}
       >
       <Stack spacing={1} px={1}>
-        {Message_options.map((el,index)=>(
-            <MenuItem onClick={handleClick} key={index}>{el.title}</MenuItem>
-        ))}
+        {Message_options.map((el, index) => (
+                <MenuItem onClick={(event) => handleClick(event, el.type)} key={index} >
+                    {el.title}
+                </MenuItem>
+            ))}
+
       </Stack>
       </Menu>
     </>

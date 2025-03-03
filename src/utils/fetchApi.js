@@ -1,8 +1,7 @@
 import { BASE_API } from "../config";
 
-
 export async function apifetch(route, token = null, data = {}, method = "GET", headers = {}) {
-    
+
     try {
         method = method.toUpperCase();
         let url = BASE_API + route;
@@ -16,15 +15,20 @@ export async function apifetch(route, token = null, data = {}, method = "GET", h
         const options = {
             method,
             headers: {
-                "Content-Type": "application/json",
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 ...headers,
             },
         };
 
-        // Attach body for non-GET methods
+        // Detect FormData and attach body correctly
         if (method !== "GET") {
-            options.body = JSON.stringify(data);
+            if (data instanceof FormData) {
+                options.body = data;
+                // ❌ DO NOT manually set Content-Type for FormData
+            } else {
+                options.headers["Content-Type"] = "application/json";
+                options.body = JSON.stringify(data);
+            }
         }
 
         const response = await fetch(url, options);
@@ -37,7 +41,7 @@ export async function apifetch(route, token = null, data = {}, method = "GET", h
                 errorResponse = await response.json();
                 errorMessage = errorResponse.message || errorMessage;
             } catch (e) {
-                console.error('Error parsing error response JSON:', e);
+                console.error('🚨 Error parsing error response JSON:', e);
             }
             return {
                 status: response.status,
@@ -49,13 +53,12 @@ export async function apifetch(route, token = null, data = {}, method = "GET", h
         }
 
         // If the response is OK, parse and return the response JSON
-        const jsonResponse = await response.json();
-        return jsonResponse;
+        return await response.json();
     } catch (error) {
         // Handle network or unexpected errors
         return {
             status: 0,
-            message: `Internal Error: ${error.message}`,
+            message: `🚨 Internal Error: ${error.message}`,
         };
     }
 }
