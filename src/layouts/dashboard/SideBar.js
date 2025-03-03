@@ -10,6 +10,8 @@ import Logo from '../../assets/Images/logo.ico';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
+import { chatReset } from '../../redux/slices/chatSlice';
+import { resetMessage } from '../../redux/slices/messageSlice';
 
 const getPath = (index) =>{
   switch (index) {
@@ -61,7 +63,10 @@ const SideBar = () => {
   };
   const handleSubMenu = (el) =>{
     if(el.title  == "Logout"){
+      dispatch(chatReset());
+      dispatch(resetMessage());
       dispatch(logout());
+      
       return <Navigate to={'/auth/login'} />
     }
   }

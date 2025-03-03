@@ -12,7 +12,8 @@ import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import CreateChat from '../../sections/main/CreateChat';
-import { setChat } from '../../redux/slices/chatSlice';
+import { chatReset, setChat } from '../../redux/slices/chatSlice';
+import { resetMessage } from '../../redux/slices/messageSlice';
 
 
 const Chats = () => {
@@ -34,6 +35,8 @@ const Chats = () => {
     apifetch("/chat",token).then((res)=>{
       if(res?.status == 401){
         dispatch(logout())
+        dispatch(resetMessage([]));
+        dispatch(chatReset([]))
       }else if(res.success == 1){
         dispatch(setChat(res?.data?.conversations?.data))
       }
@@ -101,7 +104,7 @@ const Chats = () => {
               All Chats
             </Typography>
             {/* filter((el)=> !el.pinned) */}
-            {chats.map((el,indx)=>{
+            {chats?.map((el,indx)=>{
               return <ChatElement key={indx} {...el}/>
             })}
             

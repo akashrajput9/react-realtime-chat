@@ -7,18 +7,40 @@ import { useSelector } from 'react-redux';
 import { dispatch } from '../../redux/store';
 import { deleteMessage } from '../../redux/slices/messageSlice';
 import { apifetch } from '../../utils/fetchApi';
+import { BASE_API } from '../../config';
+
+const handleDownloadFile = (el) => {
+    const file_path = el.attachments[0].file_path;
+    apifetch("/" + file_path, "dsfsd", {}, "GET", {}, "blob")
+    .then(blob => {
+        console.log(blob, "api download response");
+
+        // Ensure blob is valid
+        if (!(blob instanceof Blob)) {
+            throw new Error("Invalid Blob response");
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = el.attachments[0].file_name || "downloaded_file"; // Set a default filename
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url); // Clean up memory
+    })
+    .catch(error => console.error("🚨 Download failed:", error));
+
+};
+
 
 const DocMsg = ({el,menu}) => {
     const theme = useTheme();
-    const {token} = useSelector(state => state.auth);
     const {user}  = useSelector((state)=>state.auth);
     const is_incoming = user.id !== el.user_id;
-    const handleDownloadFile = (el) => {
-        // apifetch("/chat/delete",token,{message_id:el.id});
-
-    }
+    
   return (
-    <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
+    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
                 backgroundColor: el.incoming ? theme.palette.background.default :
                     theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
@@ -50,7 +72,7 @@ const LinkMsg = ({el,menu}) => {
     const {user}  = useSelector((state)=>state.auth);
     const is_incoming = user.id !== el.user_id;
   return (
-    <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
+    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
                 backgroundColor: el.incoming ? theme.palette.background.default :
                     theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
@@ -80,7 +102,7 @@ const ReplyMsg = ({el, menu}) => {
     const {user}  = useSelector((state)=>state.auth);
     const is_incoming = user.id !== el.user_id;
   return (
-    <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
+    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
                 backgroundColor: el.incoming ? theme.palette.background.default :
                     theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
@@ -107,16 +129,21 @@ const MediaMsg = ({el,menu}) => {
     const {user}  = useSelector((state)=>state.auth);
     const is_incoming = user.id !== el.user_id;
   return (
-    <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
+    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
         <Box p={1.5} sx={{
                 backgroundColor: el.incoming ? theme.palette.background.default :
                     theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
             }}>
+  
+  
                 <Stack spacing={1}>
-                    <img src={el.img} alt={el.message} style={{maxHeight: 210 , borderRadius:'10px'}}/>
+                    <img src={BASE_API+"/"+el.img} alt={el.message} style={{maxHeight: 210 , borderRadius:'10px'}}/>
                     <Typography variant='body2' color={el.incoming ? theme.palette.text : '#fff'}>
-                        {el.message}
+                        {el.content}
                     </Typography>
+                    <IconButton onClick={event => handleDownloadFile(el)}>
+                        <DownloadSimple/>
+                    </IconButton>
                 </Stack>
             </Box>
             {menu && !is_incoming && <MessageOptions el={el} />}

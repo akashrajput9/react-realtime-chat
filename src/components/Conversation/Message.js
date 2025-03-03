@@ -95,23 +95,34 @@ const { user } = useSelector((state) => state.auth);
 
 useEffect(() => {
   if (!user?.id) return; // Ensure user is logged in before proceeding
+  if (!socket.connected) {
+    console.log("Socket is not connected. Waiting to connect...");
+    socket.connect(); // Ensure connection is established
+  }
+
+  console.log("Socket connected:", socket.connected);
 
   socket.emit("register", user.id); // Send user ID to the server
+  console.log("Register event emitted:", user.id);
 
   socket.on("receive_message", (data) => {
-      data = data.data;
-      dispatch(moveChatToTop(data));
+    console.log("Socket received:", data);
 
-      if (data.conversation_id === messages.conversation_element?.id && data.user_id !== user.id) {
-          dispatch(addMessage(data));
-          dispatch(setRead(data.conversation_id));
-      }
+    data = data.data;
+    dispatch(moveChatToTop(data));
+
+    if (data.conversation_id === messages.conversation_element?.id && data.user_id !== user.id) {
+      dispatch(addMessage(data));
+      dispatch(setRead(data.conversation_id));
+    }
   });
 
   return () => {
-      socket.off("receive_message");
+    console.log("Cleaning up socket listener...");
+    socket.off("receive_message");
   };
 }, [user?.id, messages.conversation_element?.id, dispatch]);
+
 
   // Ref to the messages container
   const messagesEndRef = useRef(null);

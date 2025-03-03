@@ -1,7 +1,6 @@
 import { BASE_API } from "../config";
 
-export async function apifetch(route, token = null, data = {}, method = "GET", headers = {}) {
-
+export async function apifetch(route, token = null, data = {}, method = "GET", headers = {}, responseType = "json") {
     try {
         method = method.toUpperCase();
         let url = BASE_API + route;
@@ -24,7 +23,6 @@ export async function apifetch(route, token = null, data = {}, method = "GET", h
         if (method !== "GET") {
             if (data instanceof FormData) {
                 options.body = data;
-                // ❌ DO NOT manually set Content-Type for FormData
             } else {
                 options.headers["Content-Type"] = "application/json";
                 options.body = JSON.stringify(data);
@@ -52,10 +50,19 @@ export async function apifetch(route, token = null, data = {}, method = "GET", h
             };
         }
 
-        // If the response is OK, parse and return the response JSON
+        // ✅ Handle binary responses like files
+        if (responseType.toLowerCase() === "blob") {
+            return await response.blob();
+        }
+
+        // ✅ Handle text responses
+        if (responseType.toLowerCase() === "text") {
+            return await response.text();
+        }
+
+        // ✅ Default: Parse JSON responses
         return await response.json();
     } catch (error) {
-        // Handle network or unexpected errors
         return {
             status: 0,
             message: `🚨 Internal Error: ${error.message}`,

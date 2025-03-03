@@ -233,7 +233,6 @@ const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, set
     
         try {
             const response = await apifetch("/attachment/attach", token, formData, "POST");
-            console.log(response,'response api')
             if (response.success) {
                 
                 // Update state with uploaded file URL
@@ -372,7 +371,6 @@ const Footer = () => {
                 apiRes.data.type = "text";
                 // dispatch(moveChatToTop(apiRes.data))
                 dispatch(addMessage(apiRes.data));
-                console.log(apiRes,'response api')
                 let conversation = apiRes?.data?.conversation;
                 // conversation.last_message = { ...apiRes, conversation: undefined };
                 conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };

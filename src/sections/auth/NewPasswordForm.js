@@ -51,7 +51,7 @@ const NewPasswordForm = () => {
         
         <RHFTextField name='newPassword' label='New Password' type={showPassword ? 'text' : 'password'}
         InputProps={{endAdornment:(
-            <InputAdornment>
+            <InputAdornment position="start">
             <IconButton onClick={()=>{
                 setShowPassword(!showPassword);
             }}>
@@ -62,7 +62,7 @@ const NewPasswordForm = () => {
 
         <RHFTextField name='confirmPassword' label='Confirm Password' type={showPassword ? 'text' : 'password'}
         InputProps={{endAdornment:(
-            <InputAdornment>
+            <InputAdornment position="start">
             <IconButton onClick={()=>{
                 setShowPassword(!showPassword);
             }}>

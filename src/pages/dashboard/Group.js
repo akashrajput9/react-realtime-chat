@@ -66,7 +66,7 @@ const Group = () => {
                     <SimpleBarStyle  timeout={500} clickOnTrack={false}>
                         <Stack spacing={2.5}>
                             {/*  */}
-                            <Typography variant='subtitle2' sx={{color:'#676667'}}>Pinned</Typography>
+                            {/* <Typography variant='subtitle2' sx={{color:'#676667'}}>Pinned</Typography> */}
                             {/* Pinned */}
                             {/* {ChatList.filter((el)=> el.pinned).map((el)=>{
                                 return <ChatElement  {...el}/>
@@ -76,7 +76,7 @@ const Group = () => {
                               <Typography variant='subtitle2' sx={{color:'#676667'}}>All Groups</Typography>
                             {/* Chat List */}
                             {/* filter((el)=> !el.pinned) */}
-                            {chatList.map((el)=>{
+                            {chatList.filter(el => el.is_group).map((el)=>{
                                 return <ChatElement  {...el}/>
                             })}
                         </Stack>

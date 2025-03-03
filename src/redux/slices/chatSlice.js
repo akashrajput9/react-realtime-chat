@@ -15,11 +15,13 @@ const moveChatToTopHelper = (state, chatData) => {
   }
 };
 
+const initState = {
+  chats: [],
+};
+
 const chatSlice = createSlice({
   name: 'chats',
-  initialState: {
-    chats: [],
-  },
+  initialState: initState,
   reducers: {
     setChat(state, action) {
       state.chats = action.payload;
@@ -39,9 +41,12 @@ const chatSlice = createSlice({
       if (chat) {
         chat.unread_count = 0;
       }
+    },
+    chatReset(state,action){
+      state.chats = []
     }
   },
 });
 
-export const { setChat, addChat, moveChatToTop, setRead } = chatSlice.actions;
+export const { setChat, addChat, moveChatToTop, setRead, chatReset } = chatSlice.actions;
 export default chatSlice.reducer;
