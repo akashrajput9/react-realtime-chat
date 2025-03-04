@@ -29,7 +29,7 @@ const getPath = (index) =>{
 
     case 5:
       return '/roles'
-    case 5:
+    case 6:
       return '/dashboard'
   
     default:
@@ -63,8 +63,8 @@ const SideBar = () => {
   };
   const handleSubMenu = (el) =>{
     if(el.title  == "Logout"){
-      dispatch(chatReset());
-      dispatch(resetMessage());
+      dispatch(chatReset([]));
+      dispatch(resetMessage([]));
       dispatch(logout());
       
       return <Navigate to={'/auth/login'} />

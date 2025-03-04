@@ -8,6 +8,7 @@ import {
   User,
   UserGear,
   Users,
+  ChartBar
 } from "phosphor-react";
 
 const Profile_Menu = [
@@ -28,7 +29,7 @@ const Profile_Menu = [
 const Nav_Buttons = [
   {
     index: 6,
-    icon: <ChatCircleDots />,
+    icon: <ChartBar />,
   },
   {
     index: 0,
