@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import CreateChat from '../../sections/main/CreateChat';
 import { chatReset, setChat } from '../../redux/slices/chatSlice';
 import { resetMessage } from '../../redux/slices/messageSlice';
+import { Navigate } from 'react-router-dom';
 
 
 const Chats = () => {
@@ -22,6 +23,10 @@ const Chats = () => {
   const { token } = useSelector((state) => state.auth);
   const { chats } = useSelector((state) => state.chats);
   const [openDialog, setOpenDialog] = useState(false);
+  const {user} = useSelector(state => state.auth);
+
+
+  
 
   
   const handleCloseDialog = () =>{
@@ -46,6 +51,7 @@ const Chats = () => {
   
   return (    
     <>
+    {!user.user_permissions.includes("chat-list") ? <Navigate to="/settings" /> : <></>}
     <Box sx={{
       position: "relative", width: 320, 
       backgroundColor: theme.palette.mode === 'light'? "#F8FAFF" : theme.palette.background.paper,

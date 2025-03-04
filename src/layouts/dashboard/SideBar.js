@@ -12,6 +12,7 @@ import { dispatch } from '../../redux/store';
 import { logout } from '../../redux/slices/authSlice';
 import { chatReset } from '../../redux/slices/chatSlice';
 import { resetMessage } from '../../redux/slices/messageSlice';
+import { useSelector } from 'react-redux';
 
 const getPath = (index) =>{
   switch (index) {
@@ -57,6 +58,7 @@ const getMenuPath = (index) =>{
 const SideBar = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {user} = useSelector(state => state.auth);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -80,6 +82,7 @@ const SideBar = () => {
     const [selected, setSelected] = useState(0); // by default 0 index button is selected
     //switch themes
     const {onToggleMode} = useSettings();
+    
   return (
     <Box p={2} sx={{ backgroundColor: theme.palette.background.paper, 
         boxShadow: "0px 0px 2px rgba(0,0,0,0.25)", height: "100vh", width: 100, display:"flex" }}>
@@ -95,21 +98,26 @@ const SideBar = () => {
             <img src={Logo} alt={'Logo icon'} />
           </Box>
           <Stack sx={{ width: "max-content" }} direction="column" alignItems="center" spacing={3}>
-           
-            {Nav_Buttons.map((el) => (
-              el.index === selected ?
-                <Box key={el.index} sx={{ backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
-                  <IconButton sx={{ width: "max-content", color: "#fff" }} key={el.index}>
+          
+          
+            {Nav_Buttons.map((el) => {
+              const allowed = el.permissions.some(item => user.user_permissions.includes(item));
+              if(!allowed) return;
+              return (
+                el.index === selected ?
+                  <Box key={el.index} sx={{ backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
+                    <IconButton sx={{ width: "max-content", color: "#fff" }} key={el.index}>
+                      {el.icon}
+                    </IconButton>
+                  </Box>
+                  :
+                  <IconButton  onClick={() => { setSelected(el.index); navigate(getPath(el.index)) }} 
+                  sx={{ width: "max-content", color:theme.palette.mode === 'light' ? "#000" 
+                  : theme.palette.text.primary }} key={el.index}>
                     {el.icon}
                   </IconButton>
-                </Box>
-                :
-                <IconButton  onClick={() => { setSelected(el.index); navigate(getPath(el.index)) }} 
-                sx={{ width: "max-content", color:theme.palette.mode === 'light' ? "#000" 
-                : theme.palette.text.primary }} key={el.index}>
-                  {el.icon}
-                </IconButton>
-            ))}
+              )
+            })}
             <Divider sx={{ width: "48px" }} />
             {selected === 3 ?
               <Box sx={{ backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>

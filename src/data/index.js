@@ -30,18 +30,41 @@ const Nav_Buttons = [
   {
     index: 6,
     icon: <ChartBar />,
+    permissions: ['users-list','chat-list'],
   },
   {
     index: 0,
     icon: <ChatCircleDots />,
+    permissions: [
+      'chat-list-all',
+      'chat-list',
+      'chat-create',
+      'chat-edit',
+      'chat-delete',
+    ]
   },
   {
     index: 1,
     icon: <Users />,
+    permissions: [
+      'chat-list-all',
+      'chat-list',
+      'chat-create',
+      'chat-edit',
+      'chat-delete',
+    ]
   },
   {
     index: 5,
     icon: <UserGear />,
+    permissions: [
+      'role-list',
+      'role-create',
+      'role-edit',
+      'role-delete',
+      'role-assign-to-user',
+      'permission-list',
+    ]
   },
   // {
   //   index: 2,
