@@ -33,69 +33,104 @@ const handleDownloadFile = (el) => {
 
 };
 
-
-const DocMsg = ({el,menu}) => {
+const DocMsg = ({ el, menu }) => {
     const theme = useTheme();
-    const {user}  = useSelector((state)=>state.auth);
+    const { user } = useSelector((state) => state.auth);
     const is_incoming = user.id !== el.user_id;
-    
-  return (
-    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
-        <Box p={1.5} sx={{
-                backgroundColor: el.incoming ? theme.palette.background.default :
-                    theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
-            }}>
-        <Stack spacing={2}>
-            <Stack p={2} spacing={3} direction='row' alignItems='center' 
-            sx={{backgroundColor:theme.palette.background.paper, borderRadius:1}}>
-                <Image size={48}/>
-                <Typography variant='caption'>
-                    {el.content}
-                </Typography>
-                <IconButton onClick={event => handleDownloadFile(el)}>
-                    <DownloadSimple/>
-                </IconButton>
-            </Stack>
-            <Typography variant='body2' sx={{color: el.incoming ? theme.palette.text : '#fff' }} >
-                {el.message}
-            </Typography>
-        </Stack>
-        </Box>
-        {menu && !is_incoming && <MessageOptions el={el} />}
-        
-    </Stack>
-  )
-}
 
-const LinkMsg = ({el,menu}) => {
-    const theme = useTheme();
-    const {user}  = useSelector((state)=>state.auth);
-    const is_incoming = user.id !== el.user_id;
-  return (
-    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
-        <Box p={1.5} sx={{
-                backgroundColor: el.incoming ? theme.palette.background.default :
-                    theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
-            }}>
-        <Stack spacing={2}>
-            <Stack p={2} spacing={3} alignItems='start'
-             sx={{backgroundColor:theme.palette.background.paper, borderRadius: 1}}>
-                <img src={el.preview} alt={el.message} style={{maxHeight:210, borderRadius:'10px'}}/>
-                <Stack spacing={2}>
-                    <Typography variant='subtitle2'>Creating Chat App</Typography>
-                    <Typography variant='subtitle2' sx={{color:theme.palette.primary.main}} 
-                    component={Link} to="//https://www.youtube.com">www.youtube.com</Typography>
-                </Stack>
-                <Typography variant='body2' color={el.incoming ? theme.palette.text : '#fff'}>
-                    {el.message}
-                </Typography>
+    return (
+        <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
+            <Stack direction="column" spacing={0.5} alignItems={is_incoming ? 'start' : 'end'}>
+                <Typography variant="caption" color="textSecondary">{el.user.name}</Typography>
+                <Box p={1.5} sx={{
+                    backgroundColor: is_incoming ? theme.palette.background.default :
+                        theme.palette.primary.main,
+                    borderRadius: 1.5,
+                    width: 'max-content'
+                }}>
+                    <Stack spacing={2}>
+                        <Stack p={2} spacing={3} direction='row' alignItems='center'
+                            sx={{ backgroundColor: theme.palette.background.paper, borderRadius: 1 }}>
+                            <Image size={48} />
+                            <Typography variant='caption'>{el.content}</Typography>
+                            <IconButton onClick={() => handleDownloadFile(el)}>
+                                <DownloadSimple />
+                            </IconButton>
+                        </Stack>
+                        <Typography variant='body2' sx={{ color: is_incoming ? theme.palette.text : '#fff' }}>
+                            {el.message}
+                        </Typography>
+                    </Stack>
+                </Box>
             </Stack>
+            {menu && !is_incoming && <MessageOptions el={el} />}
         </Stack>
-        </Box>
-        {menu && !is_incoming && <MessageOptions el={el} />}
-    </Stack>
-  )
-}
+    );
+};
+
+
+const LinkMsg = ({ el, menu }) => {
+    const theme = useTheme();
+    const { user } = useSelector((state) => state.auth);
+    const is_incoming = user.id !== el.user_id;
+
+    return (
+        <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
+            <Stack direction="column" spacing={0.5} alignItems={is_incoming ? 'start' : 'end'}>
+                <Typography variant="caption" color="textSecondary">{el.user.name}</Typography>
+                <Box p={1.5} sx={{
+                    backgroundColor: is_incoming ? theme.palette.background.default :
+                        theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
+                }}>
+                    <Stack spacing={2}>
+                        <Stack p={2} spacing={3} alignItems='start'
+                            sx={{ backgroundColor: theme.palette.background.paper, borderRadius: 1 }}>
+                            <img src={el.preview} alt={el.message} style={{ maxHeight: 210, borderRadius: '10px' }} />
+                            <Stack spacing={2}>
+                                <Typography variant='subtitle2'>Creating Chat App</Typography>
+                                <Typography variant='subtitle2' sx={{ color: theme.palette.primary.main }}
+                                    component={Link} to="//https://www.youtube.com">www.youtube.com</Typography>
+                            </Stack>
+                            <Typography variant='body2' color={is_incoming ? theme.palette.text : '#fff'}>
+                                {el.message}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Box>
+            </Stack>
+            {menu && !is_incoming && <MessageOptions el={el} />}
+        </Stack>
+    );
+};
+
+const MediaMsg = ({ el, menu }) => {
+    const theme = useTheme();
+    const { user } = useSelector((state) => state.auth);
+    const is_incoming = user.id !== el.user_id;
+
+    return (
+        <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
+            <Stack direction="column" spacing={0.5} alignItems={is_incoming ? 'start' : 'end'}>
+                <Typography variant="caption" color="textSecondary">{el.user.name}</Typography>
+                <Box p={1.5} sx={{
+                    backgroundColor: is_incoming ? theme.palette.background.default :
+                        theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
+                }}>
+                    <Stack spacing={1}>
+                        <img src={BASE_API + "/" + el.img} alt={el.message} style={{ maxHeight: 210, borderRadius: '10px' }} />
+                        <Typography variant='body2' color={is_incoming ? theme.palette.text : '#fff'}>
+                            {el.content}
+                        </Typography>
+                        <IconButton onClick={() => handleDownloadFile(el)}>
+                            <DownloadSimple />
+                        </IconButton>
+                    </Stack>
+                </Box>
+            </Stack>
+            {menu && !is_incoming && <MessageOptions el={el} />}
+        </Stack>
+    );
+};
 
 const ReplyMsg = ({el, menu}) => {
     const theme = useTheme();
@@ -124,32 +159,7 @@ const ReplyMsg = ({el, menu}) => {
   )
 }
 
-const MediaMsg = ({el,menu}) => {
-    const theme = useTheme();
-    const {user}  = useSelector((state)=>state.auth);
-    const is_incoming = user.id !== el.user_id;
-  return (
-    <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
-        <Box p={1.5} sx={{
-                backgroundColor: el.incoming ? theme.palette.background.default :
-                    theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
-            }}>
-  
-  
-                <Stack spacing={1}>
-                    <img src={BASE_API+"/"+el.img} alt={el.message} style={{maxHeight: 210 , borderRadius:'10px'}}/>
-                    <Typography variant='body2' color={el.incoming ? theme.palette.text : '#fff'}>
-                        {el.content}
-                    </Typography>
-                    <IconButton onClick={event => handleDownloadFile(el)}>
-                        <DownloadSimple/>
-                    </IconButton>
-                </Stack>
-            </Box>
-            {menu && !is_incoming && <MessageOptions el={el} />}
-    </Stack>
-  )
-}
+
 
 const TextMsg = ({el,menu}) => {
     const theme = useTheme();
@@ -157,16 +167,22 @@ const TextMsg = ({el,menu}) => {
     const is_incoming = user.id !== el.user_id;
     return (
         <Stack direction='row' justifyContent={is_incoming ? 'start' : 'end'}>
+        <Stack direction="column" spacing={0.5} alignItems={is_incoming ? 'start' : 'end'}>
+            <Typography variant="caption" color="textSecondary">{el.user.name}</Typography>
             <Box p={1.5} sx={{
                 backgroundColor: is_incoming ? theme.palette.background.default :
-                    theme.palette.primary.main, borderRadius: 1.5, width: 'max-content'
+                    theme.palette.primary.main, 
+                borderRadius: 1.5, 
+                width: 'max-content'
             }}>
                 <Typography variant='body2' color={is_incoming ? theme.palette.text : '#fff'}>
                     {el.content}
                 </Typography>
             </Box>
-            {menu && !is_incoming && <MessageOptions el={el} />}
         </Stack>
+        {menu && !is_incoming && <MessageOptions el={el} />}
+    </Stack>
+    
     )
 }
 
