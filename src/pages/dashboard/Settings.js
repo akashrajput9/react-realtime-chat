@@ -66,12 +66,12 @@ const Settings = () => {
     //     title: 'Keyboard Shortcuts',
     //     onclick: handleOpenShortcuts
     //   },
-      {
-        key:7,
-        icon: <Pencil size={20}/>,
-        title: 'Update Profile Picture',
-        onclick: () =>{}
-      },
+    //   {
+    //     key:7,
+    //     icon: <Pencil size={20}/>,
+    //     title: 'Update Profile Picture',
+    //     onclick: () =>{}
+    //   },
     ]
 
   return (

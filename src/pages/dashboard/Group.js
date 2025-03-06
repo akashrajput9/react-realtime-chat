@@ -76,8 +76,8 @@ const Group = () => {
                               <Typography variant='subtitle2' sx={{color:'#676667'}}>All Groups</Typography>
                             {/* Chat List */}
                             {/* filter((el)=> !el.pinned) */}
-                            {chatList.filter(el => el.is_group).map((el)=>{
-                                return <ChatElement  {...el}/>
+                            {chatList.filter(el => el.is_group).map((el,index)=>{
+                                return <ChatElement key={index} {...el}/>
                             })}
                         </Stack>
                     </SimpleBarStyle>

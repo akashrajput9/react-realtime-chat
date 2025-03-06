@@ -40,6 +40,7 @@ const RolesPermissions = () => {
   const {token} = useSelector(state => state.auth);
   const [userPassword,setUserPassword] = useState("");
   const [userRePassword,setUserRePassword] = useState("");
+  const [loading , setLoading] = useState(false);
 
   
 
@@ -53,6 +54,7 @@ const RolesPermissions = () => {
     if(userPassword != userRePassword){
       alert("Password and verify password should be same");
     }
+    setLoading(true);
 
     apifetch("/users",token,{
       "name": userName,
@@ -74,28 +76,35 @@ const RolesPermissions = () => {
       }else{
         alert(res.message)
       }
+      setLoading(false);
     });
     
   };
 
   const handleDeleteUser = (userId) => {
+    setLoading(true)
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    setLoading(false);
   };
 
 
   
 
   const handleEditRole = (role) => {
+    setLoading(true);
     setEditingRole(role);
     setRoleName(role.name);
+    setLoading(false);
   };
 
   const handleUpdateRole = () => {
+    setLoading(true);
     setRoles((prevRoles) =>
       prevRoles.map((role) => (role.id === editingRole.id ? { ...role, name: roleName } : role))
     );
     setEditingRole(null);
     setRoleName('');
+    setLoading(false);
   };
 
   
@@ -108,21 +117,28 @@ const RolesPermissions = () => {
     }, []);
 
   const fetchRoles = async () => {
+    setLoading(true);
     const response = await apifetch('/roles',token);
     if (response.success) setRoles(response.data);
+    setLoading(false);
   };
 
   const fetchUsers = async () => {
+    setLoading(true);
     const response = await apifetch('/users',token);
     if (response.success) setUsers(response.data);
+    setLoading(false);
   };
 
   const fetchPermissions = async () => {
+    setLoading(true);
     const response = await apifetch('/permissions',token);
     if (response.success) setPermissions(response.data);
+    setLoading(false);
   };
 
   const handleCreateRole = async () => {
+    setLoading(true);
     if (!roleName) return;
     const response = await apifetch('/role/create', token, { name: roleName }, 'POST');
     console.log(response,'api create role')
@@ -131,6 +147,7 @@ const RolesPermissions = () => {
       fetchRoles();
       setRoleName('');
     }
+    setLoading(false);
   };
 
   const handleDeleteRole = async (roleId) => {
@@ -140,6 +157,7 @@ const RolesPermissions = () => {
 
   const handleAssignPermission = async () => {
     if (!selectedRole || !selectedPermission) return;
+    setLoading(true);
     const response = await apifetch(`/roles/${selectedRole}/permissions`, token, { permission: selectedPermission }, 'POST');
     if(response.success){
       const rolename = roles.filter(res => res.id == selectedRole)[0];
@@ -147,6 +165,7 @@ const RolesPermissions = () => {
     }else{
       alert(response.message);
     }
+    setLoading(false);
     
   };
 
@@ -194,6 +213,7 @@ const RolesPermissions = () => {
               onChange={(e) => setRoleName(e.target.value)}
             />
             <Button
+              disabled={loading}
               onClick={editingRole ? handleUpdateRole : handleCreateRole}
               variant="contained"
               sx={{ marginTop: 2 }}
@@ -236,7 +256,7 @@ const RolesPermissions = () => {
             </FormControl>
           </Box>
 
-          <Button onClick={handleAssignPermission} variant="contained">
+          <Button onClick={handleAssignPermission} disabled={loading} variant="contained">
             Assign Permission
           </Button>
       </Box>
@@ -367,7 +387,7 @@ const RolesPermissions = () => {
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" onClick={handleAddUser}>
+        <Button variant="contained" disabled={loading} onClick={handleAddUser}>
           Add User
         </Button>
       </Box>
@@ -393,7 +413,7 @@ const RolesPermissions = () => {
                 <TableCell>User ID</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Role</TableCell>
-                <TableCell>Actions</TableCell>
+                {/* <TableCell>Actions</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -401,9 +421,9 @@ const RolesPermissions = () => {
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.role}</TableCell>
+                  {/* <TableCell>{user.role}</TableCell> */}
                   <TableCell>
-                    
+                    {user.role}
                     
                     {/* <IconButton
                       onClick={() => handleDeleteUser(user.id)}

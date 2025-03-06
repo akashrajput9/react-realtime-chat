@@ -17,6 +17,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   // const { isAuthenticated, token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const [loading, setLoading]  = useState(false);
   //validation rules 
   const loginSchema = Yup.object().shape({
     email:Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -44,6 +45,7 @@ const LoginForm = () => {
     
       
         try {
+          setLoading(true);
           const resp = await apifetch("/auth/login",null,data,"POST")
           if(resp?.success){
             
@@ -56,6 +58,8 @@ const LoginForm = () => {
             })
             // dispatch(logout())
           }
+          
+
         } catch (error) {
             console.log(error);
             reset();
@@ -64,6 +68,7 @@ const LoginForm = () => {
                 message: error.message
             })
         }
+        setLoading(false);
    }
 
   return (
@@ -87,7 +92,7 @@ const LoginForm = () => {
             <Link component={RouterLink} to='/auth/reset-password'
              variant='body2' color='inherit' underline='always'>Forgot Password?</Link>
         </Stack>
-        <Button fullWidth color='inherit' size='large' type='submit' variant='contained'
+        <Button fullWidth color='inherit' size='large' disabled={loading} type='submit' variant='contained'
         sx={{bgcolor:'text.primary', color:(theme)=> theme.palette.mode === 'light' ?
          'common.white':'grey.800',
          '&:hover':{

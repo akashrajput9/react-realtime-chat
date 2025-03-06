@@ -15,6 +15,7 @@ import CreateChat from '../../sections/main/CreateChat';
 import { chatReset, setChat } from '../../redux/slices/chatSlice';
 import { resetMessage } from '../../redux/slices/messageSlice';
 import { Navigate } from 'react-router-dom';
+import LoadingScreen from '../../components/LoadingScreen';
 
 
 const Chats = () => {
@@ -24,7 +25,7 @@ const Chats = () => {
   const { chats } = useSelector((state) => state.chats);
   const [openDialog, setOpenDialog] = useState(false);
   const {user} = useSelector(state => state.auth);
-
+  const [loading,setLoading] = useState(false);
 
   
 
@@ -36,7 +37,7 @@ const Chats = () => {
   }
 
   useEffect(()=>{
-    
+    setLoading(true);
     apifetch("/chat",token).then((res)=>{
       if(res?.status == 401){
         dispatch(logout())
@@ -45,7 +46,7 @@ const Chats = () => {
       }else if(res.success == 1){
         dispatch(setChat(res?.data?.conversations?.data))
       }
-      
+      setLoading(false);
     });
   },[])
   
@@ -109,6 +110,9 @@ const Chats = () => {
             <Typography variant='subtitle2' sx={{color:"#676767"}}>
               All Chats
             </Typography>
+            
+            {loading ? <LoadingScreen/>: <></> }
+            
             {/* filter((el)=> !el.pinned) */}
             {chats?.map((el,indx)=>{
               return <ChatElement key={indx} {...el}/>

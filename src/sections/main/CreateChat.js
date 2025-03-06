@@ -22,6 +22,7 @@ const CreateChatForm = ({ handleClose }) => {
     const {chats} = useSelector((state) => state.chats);
     const {token} = useSelector((state) => state.auth);
     const [loading,setLoading] = useState(false);
+    const [loadingCreate,setLoadingCreate] = useState(false);
     
     useEffect(()=>{
         try{
@@ -63,13 +64,13 @@ const CreateChatForm = ({ handleClose }) => {
     const onSubmit = async (data) => {
         try {
             // api call
-            apifetch("/chat/create",token,{user_id:data?.user?.id},"POST").then((res)=>{
+            setLoadingCreate(true);
+            apifetch("/chat/create",token,{user_ids:[data?.user?.id]},"POST").then((res)=>{
                 if(res.success){
                     if(!res?.data?.already_exisists ){
                         const fromchats = chats.filter((resss) => {
                             return resss.id == res?.data?.id;
                         });
-                        console.log(fromchats);
                         if(!fromchats){
                             dispatch(addChat(res.data));
                         }
@@ -87,7 +88,9 @@ const CreateChatForm = ({ handleClose }) => {
             console.log('Data', data);
         } catch (error) {
             console.log(error);
+            
         }
+        setLoadingCreate(false)
     };
 
     return (
@@ -110,7 +113,7 @@ const CreateChatForm = ({ handleClose }) => {
                 {/* <RHFTextField name="message" label="Message" /> */}
                 <Stack spacing={2} direction="row" alignItems="center" justifyContent="end">
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit" variant="contained">
+                    <Button disabled={loadingCreate} type="submit" variant="contained">
                         Create
                     </Button>
                 </Stack>
