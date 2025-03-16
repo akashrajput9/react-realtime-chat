@@ -200,7 +200,16 @@ const TimeLine = ({ el }) => {
 const MessageOptions = ({el}) => {
     
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {user} = useSelector(state => state.auth);
   const {token} = useSelector(state => state.auth);
+  const Message_options = [];
+  if(user.user_permissions.includes('chat-message-delete')){
+    Message_options.push({
+        title: "Delete Message",
+        type: 'delete',
+      })
+  }
+  
   const open = Boolean(anchorEl);
   const handleClick = (event, type = null) => {
         setAnchorEl(event.currentTarget);

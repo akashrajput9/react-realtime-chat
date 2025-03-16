@@ -80,13 +80,14 @@ const Chats = () => {
           </Search>
         </Stack>
 
-        <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+        {user.user_permissions.includes('chat-create') ?
+         <>
+         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
             <Typography variant='subtitle2' component={Link}>New Chat</Typography>
             <IconButton onClick={() =>{setOpenDialog(true)}}>
                 <Plus style={{color: theme.palette.primary.main}}/>
             </IconButton>
         </Stack>
-
         <Divider/>
         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
             <Typography variant='subtitle2' component={Link}>Create New Group</Typography>
@@ -95,6 +96,9 @@ const Chats = () => {
             </IconButton>
         </Stack>
         <Divider/>
+         </> : null }   
+        
+        
         {/* <Stack spacing={1}>
           <Stack direction='row' alignItems='center' spacing={1.5}>
             <ArchiveBox size={24} />

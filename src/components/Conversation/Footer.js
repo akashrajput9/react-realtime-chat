@@ -209,6 +209,7 @@ const Actions = [
 const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, setSelectedFile,handleSendMessage }) => {
     const fileInputRef = useRef(null); // Reference for file input
     const {token} = useSelector((state) => state.auth);
+    const {user} = useSelector(state => state.user);
 
     const handleInputChange = (e) => {
         setInputField(e.target.value);
@@ -341,34 +342,13 @@ const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, set
 const Footer = () => {
     const theme = useTheme();
     const [openPicker, setOpenPicker] = useState(false);
-    const { token } = useSelector((state) => state.auth);
+    const { token,user } = useSelector((state) => state.auth);
+    
     const { messages } = useSelector((state) => state.messages);
     const [inputField, setInputField] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [sendLoading, setSendLoading] = useState(false);
 
-    // const handleSendMessage = async () => {
-    //     if (inputField.trim()) {
-    //         const formData = new FormData();
-    //         formData.append('conversation_id', messages.conversation_element.id);
-    //         formData.append('message', inputField);
-    //         if (selectedFile) {
-    //             // formData.append('file', selectedFile.file);
-    //         }
-
-    //         const apiRes = await apifetch("/chat/send", token, formData, "POST", true);
-    //         if (apiRes.success) {
-    //             setInputField('');
-    //             setSelectedFile(null);
-    //             apiRes.data.type = selectedFile ? "file" : "text";
-    //             dispatch(addMessage(apiRes.data));
-
-    //             let conversation = apiRes?.data?.conversation;
-    //             conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };
-    //             dispatch(addChat(conversation));
-    //         }
-    //     }
-    // };
 
     const handleSendMessage = async () => {
         if(sendLoading) return;
@@ -407,9 +387,8 @@ const Footer = () => {
     return (
         <Box p={2} sx={{ width: '100%', backgroundColor: theme.palette.mode === 'light' ? '#F8FAFF' : theme.palette.background.paper, boxShadow: '0px 0px 2px rgba(0,0,0,0.25)' }}>
             <Stack direction='row' alignItems={'center'} spacing={3}>
-                <Stack sx={{ width: '100%' }}>
-                    {/* Chat Input */}
-                    {/* <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} selectedFile={selectedFile} setSelectedFile={setSelectedFile} /> */}
+                {user.user_permissions.includes('chat-message-create') ? <>
+                    <Stack sx={{ width: '100%' }}>
                     <ChatInput
                         setOpenPicker={setOpenPicker}
                         inputField={inputField}
@@ -420,6 +399,8 @@ const Footer = () => {
                     />
 
                 </Stack>
+                </>: null}
+                
                 <Box onClick={handleSendMessage}  sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                         <IconButton disabled={sendLoading}>

@@ -43,17 +43,17 @@ const Nav_Buttons = [
       'chat-delete',
     ]
   },
-  {
-    index: 1,
-    icon: <Users />,
-    permissions: [
-      'chat-list-all',
-      'chat-list',
-      'chat-create',
-      'chat-edit',
-      'chat-delete',
-    ]
-  },
+  // {
+  //   index: 1,
+  //   icon: <Users />,
+  //   permissions: [
+  //     'chat-list-all',
+  //     'chat-list',
+  //     'chat-create',
+  //     'chat-edit',
+  //     'chat-delete',
+  //   ]
+  // },
   {
     index: 5,
     icon: <UserGear />,
@@ -319,12 +319,17 @@ const Message_options = [
   // {
   //   title: "Report",
   // },
-  {
-    title: "Delete Message",
-    type:'delete',
-  },
+  // {
+  //   title: "Delete Message",
+  //   type:'delete',
+  // },
 ];
 
+
+// Message_options.push({
+//   title: "Delete Message",
+//   type: 'delete',
+// })
 const SHARED_LINKS = [
   {
     type: "msg",
