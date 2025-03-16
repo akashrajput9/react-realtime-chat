@@ -209,7 +209,6 @@ const Actions = [
 const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, setSelectedFile,handleSendMessage }) => {
     const fileInputRef = useRef(null); // Reference for file input
     const {token} = useSelector((state) => state.auth);
-    const {user} = useSelector(state => state.user);
 
     const handleInputChange = (e) => {
         setInputField(e.target.value);
@@ -399,8 +398,6 @@ const Footer = () => {
                     />
 
                 </Stack>
-                </>: null}
-                
                 <Box onClick={handleSendMessage}  sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                         <IconButton disabled={sendLoading}>
@@ -409,6 +406,9 @@ const Footer = () => {
                         </IconButton>
                     </Stack>
                 </Box>
+                </>: null}
+                
+
             </Stack>
         </Box>
     );
