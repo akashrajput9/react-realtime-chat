@@ -30,7 +30,7 @@ const Nav_Buttons = [
   {
     index: 6,
     icon: <ChartBar />,
-    permissions: ['users-list','chat-list'],
+    permissions: ['user-list','chat-list'],
   },
   {
     index: 0,

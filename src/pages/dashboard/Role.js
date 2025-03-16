@@ -16,6 +16,8 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Checkbox,
+  Chip,
 } from '@mui/material';
 import Background from '../../assets/Images/roles-bg.jpg';
 import { ArrowArcLeft } from 'phosphor-react';
@@ -35,13 +37,18 @@ const RolesPermissions = () => {
   const [permissions, setPermissions] = useState([]);
   const [roleName, setRoleName] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  const [selectedPermission, setSelectedPermission] = useState('');
+  const [selectedPermission, setSelectedPermission] = useState([]);
   const [editingRole, setEditingRole] = useState(null);
   const {token} = useSelector(state => state.auth);
   const [userPassword,setUserPassword] = useState("");
   const [userRePassword,setUserRePassword] = useState("");
   const [loading , setLoading] = useState(false);
 
+  
+  const handlePermissionChange = (event) => {
+    console.log('event.target.value',event.target.value)
+    setSelectedPermission(event.target.value); // MUI already returns an array
+  };
   
 
   // Handlers for user management
@@ -240,20 +247,29 @@ const RolesPermissions = () => {
           </Box>
 
           <Box sx={{ marginBottom: 3 }}>
-            <FormControl fullWidth>
-              <InputLabel>Permission</InputLabel>
-              <Select
-                value={selectedPermission}
-                label="Permission"
-                onChange={(e) => setSelectedPermission(e.target.value)}
-              >
-                {permissions.map((permission) => (
-                  <MenuItem key={permission.id} value={permission.name}>
-                    {permission.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <FormControl fullWidth sx={{ maxWidth: 400 }}> {/* Set max width */}
+            <InputLabel>Permissions</InputLabel>
+            <Select
+              multiple
+              value={selectedPermission}
+              onChange={handlePermissionChange}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} sx={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} />
+                  ))}
+                </Box>
+              )}
+            >
+              {permissions.map((permission) => (
+                <MenuItem key={permission.id} value={permission.name}>
+                  <Checkbox checked={selectedPermission.includes(permission.name)} />
+                  {permission.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           </Box>
 
           <Button onClick={handleAssignPermission} disabled={loading} variant="contained">
@@ -456,130 +472,3 @@ const RolesPermissions = () => {
 };
 
 export default RolesPermissions;
-
-// import React, { useState, useEffect } from 'react';
-// import {
-//   Button,
-//   TextField,
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   MenuItem,
-//   Box,
-//   Typography,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableHead,
-//   TableRow,
-//   Paper,
-//   IconButton,
-// } from '@mui/material';
-// import { ArrowArcLeft } from 'phosphor-react';
-// import {apifetch} from '../../utils/fetchApi';
-// import { useSelector } from 'react-redux';
-
-// const RolesPermissions = () => {
-//   const [users, setUsers] = useState([]);
-//   const [roles, setRoles] = useState([]);
-//   const [permissions, setPermissions] = useState([]);
-//   const [roleName, setRoleName] = useState('');
-//   const [selectedRole, setSelectedRole] = useState('');
-//   const [selectedPermission, setSelectedPermission] = useState('');
-//   const [editingRole, setEditingRole] = useState(null);
-//   const {token} = useSelector(state => state.auth);
-//   useEffect(() => {
-//     fetchRoles();
-//     fetchUsers();
-//     fetchPermissions();
-//   }, []);
-
-//   const fetchRoles = async () => {
-//     const response = await apifetch('/roles',token);
-//     if (response.success) setRoles(response.data);
-//   };
-
-//   const fetchUsers = async () => {
-//     const response = await apifetch('/users',token);
-//     if (response.success) setUsers(response.data);
-//   };
-
-//   const fetchPermissions = async () => {
-//     // const response = await apifetch('/permissions');
-//     // if (response.success) setPermissions(response.data);
-//   };
-
-//   const handleCreateRole = async () => {
-//     if (!roleName) return;
-//     const response = await apifetch('/role/create', token, { name: roleName }, 'POST');
-//     console.log(response,'api create role')
-//     if (response.success) {
-//       setRoles([...roles,response.data]);
-//       fetchRoles();
-//       setRoleName('');
-//     }
-//   };
-
-//   const handleDeleteRole = async (roleId) => {
-//     // await apifetch(`/roles/${roleId}`, null, {}, 'DELETE');
-//     fetchRoles();
-//   };
-
-//   const handleAssignPermission = async () => {
-//     if (!selectedRole || !selectedPermission) return;
-//     // await apifetch(`/roles/${selectedRole}/permissions`, null, { permission: selectedPermission }, 'POST');
-//     alert(`Assigned ${selectedPermission} to Role ID: ${selectedRole}`);
-//   };
-
-//   return (
-//     <Box sx={{ padding: 4 }}>
-//       <Typography variant="h4" gutterBottom>
-//         Roles and Permissions Management
-//       </Typography>
-//       <Box sx={{ display: 'flex', gap: 3 }}>
-//         <Box sx={{ flex: 1, background: 'white', padding: 3, borderRadius: 2, boxShadow: 3 }}>
-//           <TextField
-//             label="Role Name"
-//             fullWidth
-//             value={roleName}
-//             onChange={(e) => setRoleName(e.target.value)}
-//           />
-//           <Button onClick={handleCreateRole} variant="contained" sx={{ marginTop: 2 }}>
-//             Create Role
-//           </Button>
-//         </Box>
-//         <Box sx={{ flex: 1, background: 'white', padding: 3, borderRadius: 2, boxShadow: 3 }}>
-//           <Typography variant="h5">Roles List</Typography>
-//           <TableContainer component={Paper}>
-//             <Table>
-//               <TableHead>
-//                 <TableRow>
-//                   <TableCell>Role ID</TableCell>
-//                   <TableCell>Role Name</TableCell>
-//                   <TableCell>Actions</TableCell>
-//                 </TableRow>
-//               </TableHead>
-//               <TableBody>
-//                 {roles.map((role) => (
-//                   <TableRow key={role.id}>
-//                     <TableCell>{role.id}</TableCell>
-//                     <TableCell>{role.name}</TableCell>
-//                     <TableCell>
-//                       <IconButton onClick={() => handleDeleteRole(role.id)} color="error">
-//                         🗑️
-//                       </IconButton>
-//                     </TableCell>
-//                   </TableRow>
-//                 ))}
-//               </TableBody>
-//             </Table>
-//           </TableContainer>
-          
-//         </Box>
-//       </Box>
-//     </Box>
-//   );
-// };
-
-// export default RolesPermissions;

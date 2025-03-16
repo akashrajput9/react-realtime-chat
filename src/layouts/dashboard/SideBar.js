@@ -101,6 +101,7 @@ const SideBar = () => {
           
           
             {Nav_Buttons.map((el) => {
+              console.log(user.user_permissions,'my permissions')
               const allowed = el.permissions.some(item => user.user_permissions.includes(item));
               if(!allowed) return;
               return (

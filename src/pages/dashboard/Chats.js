@@ -16,6 +16,7 @@ import { chatReset, setChat } from '../../redux/slices/chatSlice';
 import { resetMessage } from '../../redux/slices/messageSlice';
 import { Navigate } from 'react-router-dom';
 import LoadingScreen from '../../components/LoadingScreen';
+import CreateGroup from '../../sections/main/CreateGroup';
 
 
 const Chats = () => {
@@ -24,15 +25,18 @@ const Chats = () => {
   const { token } = useSelector((state) => state.auth);
   const { chats } = useSelector((state) => state.chats);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openGroupDialog, setOpenGroupDialog] = useState(false);
   const {user} = useSelector(state => state.auth);
   const [loading,setLoading] = useState(false);
   
 
   
   const handleCloseDialog = () =>{
-    console.log("helel")
     setOpenDialog(false);
+  }
 
+  const handleCloseGroupDialog = () => {
+    setOpenGroupDialog(false);
   }
 
   useEffect(()=>{
@@ -82,6 +86,14 @@ const Chats = () => {
                 <Plus style={{color: theme.palette.primary.main}}/>
             </IconButton>
         </Stack>
+
+        <Divider/>
+        <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+            <Typography variant='subtitle2' component={Link}>Create New Group</Typography>
+            <IconButton onClick={() =>{setOpenGroupDialog(true)}}>
+                <Plus style={{color: theme.palette.primary.main}}/>
+            </IconButton>
+        </Stack>
         <Divider/>
         {/* <Stack spacing={1}>
           <Stack direction='row' alignItems='center' spacing={1.5}>
@@ -123,7 +135,8 @@ const Chats = () => {
       </Stack>
 
     </Box>
-    {openDialog && <CreateChat open={openDialog} handleClose={handleCloseDialog}/>}    
+    {openDialog && <CreateChat open={openDialog} handleClose={handleCloseDialog}/>}   
+    {openGroupDialog && <CreateGroup open={openGroupDialog} handleClose={handleCloseGroupDialog}/>} 
     </>
   )
 }
