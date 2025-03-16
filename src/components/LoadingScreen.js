@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { Spinner } from "phosphor-react";
 import React from "react";
 
 const loadingDiv = {
@@ -13,7 +14,9 @@ const LoadingScreen = () => {
     <>
     
     <div sylyle={loadingDiv}>
-    <Typography>Loading.....</Typography>
+    {/* <Typography>Loading.....</Typography> */}
+      {/* <img src={'loading.gif'} /> */}
+      <Spinner as="span" animation="grow" />
     </div>
     </>
   )

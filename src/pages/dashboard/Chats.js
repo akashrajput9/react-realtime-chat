@@ -26,7 +26,6 @@ const Chats = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const {user} = useSelector(state => state.auth);
   const [loading,setLoading] = useState(false);
-
   
 
   

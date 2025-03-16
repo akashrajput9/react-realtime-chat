@@ -55,7 +55,7 @@ import { DocMsg, LinkMsg, MediaMsg, ReplyMsg, TextMsg } from './MsgTypes';  // A
 import { socket } from '../../socket';
 import { dispatch } from '../../redux/store';
 import { addMessage } from '../../redux/slices/messageSlice';
-import { moveChatToTop, setRead } from '../../redux/slices/chatSlice';
+import { addChat, handleNewMessage, moveChatToTop, setRead } from '../../redux/slices/chatSlice';
 
 const Message = ({ menu }) => {
 const { messages } = useSelector((state) => state.messages);
@@ -106,16 +106,42 @@ useEffect(() => {
   console.log("Register event emitted:", user.id);
 
   socket.on("receive_message", (data) => {
-    console.log("Socket received:", data);
+      console.log("Socket received:", data);
 
-    data = data.data;
-    dispatch(moveChatToTop(data));
+      data = data.data;
 
-    if (data.conversation_id === messages.conversation_element?.id && data.user_id !== user.id) {
-      dispatch(addMessage(data));
-      dispatch(setRead(data.conversation_id));
-    }
+      // Extract conversation details
+      const conversation = data.conversation;
+      const lastMessage = {
+          id: data.id,
+          conversation_id: data.conversation_id,
+          user_id: data.user_id,
+          content: data.content,
+          created_at: data.created_at,
+      };
+
+      // Ensure messages.chats is defined before accessing it
+      const chats = messages?.chats || [];
+
+      // Check if the chat already exists in state
+      const chatExists = chats.some(chat => chat.id === conversation.id);
+
+      if (!chatExists) {
+          // If chat does not exist, add it
+          dispatch(addChat({ ...conversation, last_message: lastMessage }));
+      } else {
+          // If chat exists, update last message & move to top
+          dispatch(handleNewMessage(data));
+      }
+
+      // If the message is for the currently open chat and not from the logged-in user
+      if (data.conversation_id === messages?.conversation_element?.id && data.user_id !== user.id) {
+          dispatch(addMessage(data));
+          dispatch(setRead(data.conversation_id));
+      }
   });
+
+
 
   return () => {
     console.log("Cleaning up socket listener...");

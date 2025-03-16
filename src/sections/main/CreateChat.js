@@ -11,6 +11,7 @@ import { dispatch } from '../../redux/store';
 import { setUsers } from '../../redux/slices/usersSlice';
 import { addChat } from '../../redux/slices/chatSlice';
 import { setMessages } from '../../redux/slices/messageSlice';
+import { Spinner } from 'phosphor-react';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -67,11 +68,12 @@ const CreateChatForm = ({ handleClose }) => {
             setLoadingCreate(true);
             apifetch("/chat/create",token,{user_ids:[data?.user?.id]},"POST").then((res)=>{
                 if(res.success){
+                    console.log(res.data,'data from chat create')
                     if(!res?.data?.already_exisists ){
                         const fromchats = chats.filter((resss) => {
                             return resss.id == res?.data?.id;
                         });
-                        if(!fromchats){
+                        if(fromchats.length === 0){
                             dispatch(addChat(res.data));
                         }
                         
@@ -114,7 +116,7 @@ const CreateChatForm = ({ handleClose }) => {
                 <Stack spacing={2} direction="row" alignItems="center" justifyContent="end">
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button disabled={loadingCreate} type="submit" variant="contained">
-                        Create
+                        {loadingCreate ? <Spinner as="span" animation="grow" /> : 'Create'}
                     </Button>
                 </Stack>
             </Stack>

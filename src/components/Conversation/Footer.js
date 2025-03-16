@@ -162,7 +162,8 @@ import { PaperPlaneTilt } from 'phosphor-react';
 import { apifetch } from '../../utils/fetchApi';
 import { addMessage, setMessages } from '../../redux/slices/messageSlice';
 import { dispatch } from '../../redux/store';
-import { addChat, moveChatToTop } from '../../redux/slices/chatSlice';
+import {  handleSendMessage as handleSendSlice } from '../../redux/slices/chatSlice';
+import LoadingScreen from '../LoadingScreen';
 
 
 const StyledInput = styled(TextField)(({ theme }) => ({
@@ -338,6 +339,7 @@ const Footer = () => {
     const { messages } = useSelector((state) => state.messages);
     const [inputField, setInputField] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [sendLoading, setSendLoading] = useState(false);
 
     // const handleSendMessage = async () => {
     //     if (inputField.trim()) {
@@ -363,25 +365,37 @@ const Footer = () => {
     // };
 
     const handleSendMessage = async () => {
+        if(sendLoading) return;
+        setSendLoading(true)
         if (inputField.trim() || selectedFile) {
-            
-            const apiRes = await apifetch("/chat/send", token, { conversation_id: messages.conversation_element.id, message: String(inputField),selected_file:selectedFile?.attachment_id }, "POST");
+            const payload = {
+                conversation_id: messages.conversation_element.id,
+                message: String(inputField),
+                selected_file: selectedFile?.attachment_id
+            };
+    
+            const apiRes = await apifetch("/chat/send", token, payload, "POST");
+    
             if (apiRes.success) {
                 setInputField('');
-                apiRes.data.type = "text";
-                // dispatch(moveChatToTop(apiRes.data))
+                setSelectedFile(null);
+    
+                // Ensure last_message structure is correct
+                const lastMessage = { ...apiRes.data, type: "text", conversation: undefined };
+    
+                // Dispatch to update message list
                 dispatch(addMessage(apiRes.data));
-                let conversation = apiRes?.data?.conversation;
-                // conversation.last_message = { ...apiRes, conversation: undefined };
-                conversation = { ...conversation, last_message: { ...apiRes?.data, conversation: undefined } };
-
-                dispatch(addChat(conversation))
-                setSelectedFile(null)
-                
+    
+                // Update chat and move to top without increasing unread count
+                dispatch(handleSendSlice({ 
+                    ...apiRes.data, 
+                    last_message: lastMessage 
+                }));
             }
         }
+        setSendLoading(false)
     };
-
+    
 
 
     return (
@@ -391,11 +405,11 @@ const Footer = () => {
                     {/* Chat Input */}
                     <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                 </Stack>
-
-                <Box onClick={handleSendMessage} sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
+                <Box onClick={handleSendMessage}  sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                        <IconButton>
-                            <PaperPlaneTilt color='#fff' />
+                        <IconButton disabled={sendLoading}>
+                            {sendLoading? <LoadingScreen />:  <PaperPlaneTilt color='#fff' />}
+                            
                         </IconButton>
                     </Stack>
                 </Box>
