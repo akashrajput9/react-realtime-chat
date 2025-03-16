@@ -206,7 +206,7 @@ const Actions = [
     }
 ];
 
-const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, setSelectedFile }) => {
+const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, setSelectedFile,handleSendMessage }) => {
     const fileInputRef = useRef(null); // Reference for file input
     const {token} = useSelector((state) => state.auth);
 
@@ -294,6 +294,12 @@ const ChatInput = ({ setOpenPicker, inputField, setInputField, selectedFile, set
                 <StyledInput
                     value={inputField}
                     onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage();
+                        }
+                    }}
                     fullWidth
                     placeholder="Write a message..."
                     variant="filled"
@@ -403,7 +409,16 @@ const Footer = () => {
             <Stack direction='row' alignItems={'center'} spacing={3}>
                 <Stack sx={{ width: '100%' }}>
                     {/* Chat Input */}
-                    <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                    {/* <ChatInput setOpenPicker={setOpenPicker} inputField={inputField} setInputField={setInputField} selectedFile={selectedFile} setSelectedFile={setSelectedFile} /> */}
+                    <ChatInput
+                        setOpenPicker={setOpenPicker}
+                        inputField={inputField}
+                        setInputField={setInputField}
+                        selectedFile={selectedFile}
+                        setSelectedFile={setSelectedFile}
+                        handleSendMessage={handleSendMessage} // Pass handleSendMessage
+                    />
+
                 </Stack>
                 <Box onClick={handleSendMessage}  sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
