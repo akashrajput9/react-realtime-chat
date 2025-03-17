@@ -23,6 +23,9 @@ import Background from '../../assets/Images/roles-bg.jpg';
 import { ArrowArcLeft } from 'phosphor-react';
 import { apifetch } from '../../utils/fetchApi';
 import { useSelector } from 'react-redux';
+import { dispatch } from '../../redux/store';
+import { login } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const RolesPermissions = () => {
   // State for user management
@@ -39,16 +42,37 @@ const RolesPermissions = () => {
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedPermission, setSelectedPermission] = useState([]);
   const [editingRole, setEditingRole] = useState(null);
-  const {token} = useSelector(state => state.auth);
   const [userPassword,setUserPassword] = useState("");
   const [userRePassword,setUserRePassword] = useState("");
   const [loading , setLoading] = useState(false);
-
+  const {user,token} = useSelector(state => state.auth);
+  const navigate = useNavigate();
   
   const handlePermissionChange = (event) => {
     console.log('event.target.value',event.target.value)
     setSelectedPermission(event.target.value); // MUI already returns an array
   };
+
+  const handleDirectLogin = async (id) => {
+    setLoading(true);
+    try {
+      
+      const resp = await apifetch("/auth/login",token,{id:id},"POST")
+      console.log('login response',resp);
+      if(resp?.success){
+        dispatch(login(resp?.data))
+        navigate("/app");
+  
+      }else{
+        alert(resp?.message);
+      }
+      
+    } catch (error) {
+        console.log(error);
+        
+    }
+    setLoading(false)
+  }
   
 
   // Handlers for user management
@@ -278,7 +302,8 @@ const RolesPermissions = () => {
       </Box>
 
       {/* User List Box */}
-      <Box
+
+      {user.user_permissions.includes('role-list') ?<Box
         sx={{
           background: 'white',
           padding: 3,
@@ -288,41 +313,41 @@ const RolesPermissions = () => {
           marginRight: 'auto'
         }}
       >
-        
         <Typography variant="h5" gutterBottom>
-            Roles List
-          </Typography>
-          <TableContainer component={Paper} sx={{ maxHeight: 300, overflow: 'auto' }}>
-          <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Role ID</TableCell>
-                  <TableCell>Role Name</TableCell>
-                  <TableCell>Actions</TableCell>
+          Roles List
+        </Typography>
+        <TableContainer component={Paper} sx={{ maxHeight: 300, overflow: 'auto' }}>
+        <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Role ID</TableCell>
+                <TableCell>Role Name</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody  >
+              {roles.map((role) => (
+                <TableRow key={role.id}>
+                  <TableCell>{role.id}</TableCell>
+                  <TableCell>{role.name}</TableCell>
+                  <TableCell>
+                  {/* <IconButton onClick={() => handleDeleteRole(role.id)} color="error">
+                      🗑️
+                    </IconButton> */}
+                    {/* <IconButton onClick={() => handleEditRole(role)} color="primary">
+                      ✏️
+                    </IconButton> */}
+                    
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody  >
-                {roles.map((role) => (
-                  <TableRow key={role.id}>
-                    <TableCell>{role.id}</TableCell>
-                    <TableCell>{role.name}</TableCell>
-                    <TableCell>
-                    {/* <IconButton onClick={() => handleDeleteRole(role.id)} color="error">
-                        🗑️
-                      </IconButton>
-                      <IconButton onClick={() => handleEditRole(role)} color="primary">
-                        ✏️
-                      </IconButton> */}
-                     
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
 
-
+: null }
+      
 
       
 
@@ -409,7 +434,7 @@ const RolesPermissions = () => {
       </Box>
 
       {/* User List Box */}
-      <Box
+      {user.user_permissions.includes('user-list') ? <Box
         sx={{
           background: 'white',
           padding: 3,
@@ -428,18 +453,21 @@ const RolesPermissions = () => {
               <TableRow>
                 <TableCell>User ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Role</TableCell>
-                {/* <TableCell>Actions</TableCell> */}
+                {/* <TableCell>Role</TableCell> */}
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
+              {users.map((usr) => (
+                <TableRow key={usr.id}>
+                  <TableCell>{usr.id}</TableCell>
+                  <TableCell>{usr.name}</TableCell>
                   {/* <TableCell>{user.role}</TableCell> */}
                   <TableCell>
-                    {user.role}
+                    {user.user_permissions.includes("direct-user-login") ?
+                     <IconButton color="error" onClick={(e) => handleDirectLogin(usr.id)}>
+                      <ArrowArcLeft />
+                    </IconButton>: null}
                     
                     {/* <IconButton
                       onClick={() => handleDeleteUser(user.id)}
@@ -459,7 +487,8 @@ const RolesPermissions = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Box>
+      </Box>: null}
+      
 
       
 

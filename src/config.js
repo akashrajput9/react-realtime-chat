@@ -73,11 +73,11 @@ export const updateRole = (roleId, name) =>
 export const defaultLang = allLangs[0]; // English
 
 // export const BASE_API = "http://realtime-live-chat.test/api";
-export const BASE_API = "https://backchat.directwebhost.com/api";
-// export const BASE_API = 'http://127.0.0.1:8000/api'
+// export const BASE_API = "https://backchat.directwebhost.com/api";
+export const BASE_API = 'http://127.0.0.1:8000/api'
 // export const BASE_API = "https://node.directwebhost.com/api";
-// export const NODE_SERVER = "http://localhost:3001";
-export const NODE_SERVER = "https://nodechat.directwebhost.com/";
+export const NODE_SERVER = "http://localhost:3001";
+// export const NODE_SERVER = "https://nodechat.directwebhost.com/";
 
 // DEFAULT ROOT PATH
 export const DEFAULT_PATH = PATH_DASHBOARD.general.app; // as '/app'
